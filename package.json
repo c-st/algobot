@@ -7,8 +7,13 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest",
+    "test": "yarn jest",
     "cdk": "AWS_PROFILE=algobot cdk"
+  },
+  "wallaby": {
+    "tests": [
+      "src/**/*.test.ts"
+    ]
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.96.0",
