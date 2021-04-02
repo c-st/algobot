@@ -1,14 +1,35 @@
-# Welcome to your CDK TypeScript project!
+# Algobot
 
-This is a blank project for TypeScript development with CDK.
+> A bot which regularly sends 0.00 ALGO to a configured address in order to compound rewards.
+> Transaction fees are covered by previously depositing funds.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Getting started
 
-## Useful commands
+Based on [AWS CDK Pipelines](https://aws.amazon.com/blogs/developer/cdk-pipelines-continuous-delivery-for-aws-cdk-applications/)
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+- Configure AWS profile named `algobot`
+- Create GitHub personal access token (required permissions are `repo`, `admin:repo_hook`)
+- In AWS account, create a secret named `github_token` with GitHub token
+- Run CDK bootstrap: `yarn cdk bootstrap --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess`
+- Deploy build stack: `yarn cdk deploy AlgobotBuildStack`
+
+## Functionality
+
+- Enter Target address
+- Set interval (every n hours)
+- Add funding (deposit ALGO for covering fees of 0.001 ALGO/transaction)
+
+## Infrastructure
+
+AWS Serverless
+w. Amplify Web-App (Vue + Vite + Typescript)
+
+AWS resources:
+
+- API Gateway w. Lambda handlers (for web app)
+- Lambda for sending transactions
+- Trigger Lambda regularly via SQS (?)
+
+## Future optimizations
+
+- Determine optimal interval for sending 0.00 ALGO (rewards should be significantly larger than transaction fees)
