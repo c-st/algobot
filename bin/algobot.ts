@@ -5,6 +5,3 @@ import { BuildStack } from "../lib/build-stack";
 
 const app = new cdk.App();
 new BuildStack(app);
-app.synth();
-
-// new AlgobotStack(app, 'AlgobotStack');
