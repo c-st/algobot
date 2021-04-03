@@ -10,7 +10,6 @@ export const buildCollectRewardsStateMachine = (stack: CDK.Stack) => {
     stack,
     "DetermineTimeToWait",
     {
-      functionName: "DetermineTimeToWait",
       entry: path.join(__dirname, "../src/determineTimeToWait.ts"),
       ...DEFAULT_LAMBDA_SETTINGS,
     }
@@ -20,7 +19,6 @@ export const buildCollectRewardsStateMachine = (stack: CDK.Stack) => {
     stack,
     "CollectReward",
     {
-      functionName: "CollectReward",
       entry: path.join(__dirname, "../src/collectReward.ts"),
       ...DEFAULT_LAMBDA_SETTINGS,
     }
@@ -35,9 +33,13 @@ export const buildCollectRewardsStateMachine = (stack: CDK.Stack) => {
     }
   );
 
-  const waitForRewardCollection = new SF.Wait(stack, "Wait for reward collection", {
-    time: SF.WaitTime.secondsPath("$.waitTimeSeconds"),
-  });
+  const waitForRewardCollection = new SF.Wait(
+    stack,
+    "Wait for reward collection",
+    {
+      time: SF.WaitTime.secondsPath("$.waitTimeSeconds"),
+    }
+  );
 
   const collectReward = new SFTasks.LambdaInvoke(stack, "Collect rewards", {
     lambdaFunction: collectRewardHandler,

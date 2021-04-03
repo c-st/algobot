@@ -1,7 +1,5 @@
 import * as path from "path";
 import * as CDK from "@aws-cdk/core";
-import * as ApiGateway from "@aws-cdk/aws-apigateway";
-import * as LambdaNodeJs from "@aws-cdk/aws-lambda-nodejs";
 import * as Lambda from "@aws-cdk/aws-lambda";
 import { buildCollectRewardsStateMachine } from "./collectRewardsStateMachine";
 
