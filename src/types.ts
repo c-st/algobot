@@ -10,11 +10,11 @@ export type StartCollectingRewardsCommand = {
   minimumRewardToCollect: number;
 };
 
-export type DetermineTimeToWaitResult = {
+export type DetermineTimeToWaitResult = StartCollectingRewardsCommand & {
   waitTimeSeconds: number;
 };
 
-export type CollectRewardResult = {
+export type CollectRewardResult = StartCollectingRewardsCommand & {
   address: AlgoAddress;
   balance: number;
   collectedReward?: number;

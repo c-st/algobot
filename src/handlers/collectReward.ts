@@ -16,8 +16,8 @@ export const handler = async (event: {
    */
 
   return {
-    address,
     feeBalance: 1.005,
     balance: 1243,
+    ...event
   };
 };

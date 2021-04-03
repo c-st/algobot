@@ -9,14 +9,14 @@ export const handler = async (
 ): Promise<DetermineTimeToWaitResult> => {
   const { address, minimumRewardToCollect } = event;
   console.log(
-    `Estimating reward collecting time for ${address} (at least ${minimumRewardToCollect} ALGO)`,
+    `Estimating reward collection time for ${address} (at least ${minimumRewardToCollect} ALGO)`,
     event
   );
   const { algorandClient } = await dependencies(process.env.SECRET_ARN!);
 
   const accountState = await algorandClient.getAccountState(address);
   console.log("determineTimeToWait", { event, accountState });
-  
+
   /**
    * - fetch claimable rewards for address
    * - fetch balance for address
@@ -26,5 +26,6 @@ export const handler = async (
 
   return {
     waitTimeSeconds: 15,
+    ...event,
   };
 };
