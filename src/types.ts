@@ -1,3 +1,8 @@
+export interface Secrets {
+  algodApiKey: string;
+  algodApiServer: string;
+}
+
 export type AlgoAddress = string;
 
 export type StartCollectingRewardsCommand = {

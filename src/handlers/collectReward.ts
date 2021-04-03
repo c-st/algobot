@@ -1,4 +1,4 @@
-import { AlgoAddress, CollectRewardResult } from "./types";
+import { AlgoAddress, CollectRewardResult } from "../types";
 
 export const handler = async (event: {
   address: AlgoAddress;
