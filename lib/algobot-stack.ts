@@ -6,8 +6,8 @@ import { buildCollectRewardsStateMachine } from "./collectRewardsStateMachine";
 import { NodejsFunctionProps } from "@aws-cdk/aws-lambda-nodejs";
 
 export const DEFAULT_LAMBDA_SETTINGS: Partial<NodejsFunctionProps> = {
-  timeout: CDK.Duration.seconds(3),
-  memorySize: 128,
+  timeout: CDK.Duration.seconds(2),
+  memorySize: 512,
   tracing: Lambda.Tracing.ACTIVE,
   runtime: Lambda.Runtime.NODEJS_14_X,
 };

@@ -1,9 +1,8 @@
-import { AlgoAddress, CollectRewardResult } from "../types";
+import { CollectRewardResult, RewardCollectionParameters } from "../types";
 
-export const handler = async (event: {
-  address: AlgoAddress;
-  minimumRewardToCollect: number;
-}): Promise<CollectRewardResult> => {
+export const handler = async (
+  event: RewardCollectionParameters
+): Promise<CollectRewardResult> => {
   const { address, minimumRewardToCollect } = event;
   console.log(
     `Fetching rewards for ${address} (minimum ${minimumRewardToCollect})`,
@@ -18,6 +17,7 @@ export const handler = async (event: {
   return {
     feeBalance: 1.005,
     balance: 1243,
-    ...event
+    remainingFeeBalanceForAddress: 1.003,
+    ...event,
   };
 };

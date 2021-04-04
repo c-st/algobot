@@ -1,11 +1,11 @@
 import { dependencies } from "../dependencies";
 import {
   DetermineTimeToWaitResult,
-  StartCollectingRewardsCommand,
+  RewardCollectionParameters,
 } from "../types";
 
 export const handler = async (
-  event: StartCollectingRewardsCommand
+  event: RewardCollectionParameters
 ): Promise<DetermineTimeToWaitResult> => {
   const { address, minimumRewardToCollect } = event;
   console.log(

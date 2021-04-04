@@ -1,13 +1,28 @@
 # Collect rewards
 
-Secret:
+**Target Address**: "ABCD123" (address to collect rewards for)
+**Algobot Address**: "BBBB123" (address to send transactions from)
 
-```json
-{
-  "algodApiKey": "HfgfgyLEfO60MZYpgu7St7xiGB1Y5MY74KaJgVJQ",
-  "algodApiServer": "https://testnet-algorand.api.purestake.io/ps2"
-}
-```
+## How it works
+
+### Funding
+
+Example:
+
+- User transfers 2 ALGOs from Target Address to Algobot Address
+- Algobot records incoming transactions ("From address ABCD123 I received 2 ALGOs") -> target address is funded
+
+| Target Address | Amount funded |
+| -------------- | ------------: |
+| ABCD123        |        2 ALGO |
+
+### Collecting rewards regularly
+
+- User enables reward collection for their Target address
+- In order to claim rewards Algobot sends a transaction of 0.0 ALGO to Target Address
+- Transaction fees are paid from the Algobot address, but are deducted from user's funding amount at the same time
+
+## Example requests
 
 StartCollectingRewardsCommand:
 

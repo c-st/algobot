@@ -67,15 +67,19 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
     .next(
       new SF.Choice(stack, "Sufficient fee balance?")
         .when(
-          SF.Condition.numberGreaterThanEquals("$.feeBalance", 0.001), // should be fee balance of addresses' stake of fee account.
+          SF.Condition.numberGreaterThanEquals(
+            "$.remainingFeeBalanceForAddress",
+            0.001
+          ),
           determineTimeToWait
         )
         .otherwise(insufficientBalanceFail)
     );
 
-  new SF.StateMachine(stack, "CollectRewards", {
-    stateMachineName: "CollectRewards",
+  new SF.StateMachine(stack, "CollectRewardsStateMachine", {
+    stateMachineName: "CollectRewardsStateMachine",
     stateMachineType: SF.StateMachineType.STANDARD,
+    tracingEnabled: true,
     definition,
   });
 };

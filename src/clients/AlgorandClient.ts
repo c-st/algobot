@@ -1,4 +1,7 @@
 import * as AlgoSdk from "algosdk";
+import * as AWSXRay from "aws-xray-sdk-core";
+
+AWSXRay.captureHTTPsGlobal(require("https"), true);
 
 export enum ApiServer {
   PURESTAKE_BETANET = "https://betanet-algorand.api.purestake.io/ps2",

@@ -5,18 +5,18 @@ export interface Secrets {
 
 export type AlgoAddress = string;
 
-export type StartCollectingRewardsCommand = {
-  address: string;
+export type RewardCollectionParameters = {
+  address: AlgoAddress;
   minimumRewardToCollect: number;
 };
 
-export type DetermineTimeToWaitResult = StartCollectingRewardsCommand & {
+export type DetermineTimeToWaitResult = RewardCollectionParameters & {
   waitTimeSeconds: number;
 };
 
-export type CollectRewardResult = StartCollectingRewardsCommand & {
-  address: AlgoAddress;
+export type CollectRewardResult = RewardCollectionParameters & {
   balance: number;
   collectedReward?: number;
   feeBalance: number;
+  remainingFeeBalanceForAddress: number;
 };
