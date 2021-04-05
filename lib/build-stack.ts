@@ -52,7 +52,7 @@ export class BuildStack extends CDK.Stack {
     // );
 
     // Production stage
-    // const prodApp = new AlgobotStage(this, "Prod");
-    // pipeline.addApplicationStage(prodApp);
+    const prodApp = new AlgobotStage(this, "Prod");
+    pipeline.addApplicationStage(prodApp);
   }
 }
