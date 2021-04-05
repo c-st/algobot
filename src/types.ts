@@ -1,6 +1,7 @@
 export interface Secrets {
   algodApiKey: string;
   algodApiServer: string;
+  mnemonic: string;
 }
 
 export type AlgoAddress = string;
@@ -15,8 +16,6 @@ export type DetermineTimeToWaitResult = RewardCollectionParameters & {
 };
 
 export type CollectRewardResult = RewardCollectionParameters & {
-  balance: number;
   collectedReward?: number;
-  feeBalance: number;
-  remainingFeeBalanceForAddress: number;
+  remainingFeeBalance?: number;
 };

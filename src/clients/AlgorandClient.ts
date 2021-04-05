@@ -1,4 +1,5 @@
 import * as AlgoSdk from "algosdk";
+import { Transaction } from "algosdk";
 import * as AWSXRay from "aws-xray-sdk-core";
 import { AlgoAddress } from "../types";
 
@@ -20,7 +21,11 @@ interface AccountState {
 export class AlgorandClient {
   private algodClient: AlgoSdk.Algodv2;
 
-  constructor(apiKey: string, serverUrl: string = ApiServer.PURESTAKE_TESTNET) {
+  constructor(
+    apiKey: string,
+    private accountMnemonic: string,
+    serverUrl: string = ApiServer.PURESTAKE_TESTNET
+  ) {
     const token = {
       "X-API-Key": apiKey,
     };
@@ -46,6 +51,33 @@ export class AlgorandClient {
       ),
       pendingRewards: AlgoSdk.microalgosToAlgos(pendingRewards),
     };
+  }
+
+  async sendTransaction(
+    toAddress: AlgoAddress,
+    amount: number = 0
+  ): Promise<string> {
+    const parameters = await this.algodClient.getTransactionParams().do();
+    const account = AlgoSdk.mnemonicToSecretKey(this.accountMnemonic);
+
+    const transaction: any = {
+      from: account.addr,
+      to: toAddress,
+      fee: 1,
+      amount,
+      firstRound: parameters.firstRound,
+      lastRound: parameters.lastRound,
+      genesisID: parameters.genesisID,
+      genesisHash: parameters.genesisHash,
+      note: new Uint8Array(0),
+    };
+
+    const signedTxn = AlgoSdk.signTransaction(transaction, account.sk);
+    const result = await this.algodClient
+      .sendRawTransaction(signedTxn.blob)
+      .do();
+
+    return result.txId;
   }
 
   // sending a tx: https://github.com/PureStake/api-examples/blob/master/javascript-examples/v2/algod_submit_tx.js

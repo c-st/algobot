@@ -65,10 +65,10 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
     .next(waitForRewardCollection)
     .next(collectReward)
     .next(
-      new SF.Choice(stack, "Sufficient fee balance?")
+      new SF.Choice(stack, "Verify remaining fee balance")
         .when(
           SF.Condition.numberGreaterThanEquals(
-            "$.remainingFeeBalanceForAddress",
+            "$.remainingFeeBalance",
             0.001
           ),
           determineTimeToWait

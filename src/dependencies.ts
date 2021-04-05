@@ -17,7 +17,7 @@ const buildDependencies = async (
       ? await secretsManager.getSecretValue({ SecretId: secretArn }).promise()
       : secretResponse;
 
-  const { algodApiKey, algodApiServer } = JSON.parse(
+  const { algodApiKey, algodApiServer, mnemonic } = JSON.parse(
     secretResponse.SecretString!
   ) as Secrets;
 
@@ -25,7 +25,11 @@ const buildDependencies = async (
     throw Error("Missing secret values");
   }
 
-  const algorandClient = new AlgorandClient(algodApiKey, algodApiServer);
+  const algorandClient = new AlgorandClient(
+    algodApiKey,
+    mnemonic,
+    algodApiServer
+  );
 
   return { algorandClient };
 };
