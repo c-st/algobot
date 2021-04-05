@@ -1,4 +1,3 @@
-import * as path from "path";
 import * as CDK from "@aws-cdk/core";
 import * as Lambda from "@aws-cdk/aws-lambda";
 import * as SecretsManager from "@aws-cdk/aws-secretsmanager";

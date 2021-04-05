@@ -1,5 +1,6 @@
 import * as AlgoSdk from "algosdk";
 import * as AWSXRay from "aws-xray-sdk-core";
+import { AlgoAddress } from "../types";
 
 AWSXRay.captureHTTPsGlobal(require("https"), true);
 
@@ -10,10 +11,10 @@ export enum ApiServer {
 }
 
 interface AccountState {
-  address: string;
-  amount: number | bigint;
-  amountWithoutPendingRewards: number;
-  pendingRewards: number;
+  address: AlgoAddress; // public key
+  amount: number; // balance + unclaimed pending rewards
+  amountWithoutPendingRewards: number; // balance without unclaimed pending rewards
+  pendingRewards: number; // unclaimed pending rewards
 }
 
 export class AlgorandClient {
@@ -33,15 +34,16 @@ export class AlgorandClient {
       "amount-without-pending-rewards": amountWithoutPendingRewards,
       "pending-rewards": pendingRewards,
     } = state;
-    
-    // setBalance(Number(result.amount) / 1000000);
+
     console.log(state);
 
     return {
       address,
-      amount,
-      amountWithoutPendingRewards,
-      pendingRewards,
+      amount: AlgoSdk.microalgosToAlgos(amount),
+      amountWithoutPendingRewards: AlgoSdk.microalgosToAlgos(
+        amountWithoutPendingRewards
+      ),
+      pendingRewards: AlgoSdk.microalgosToAlgos(pendingRewards),
     };
   }
 }

@@ -4,7 +4,12 @@ import { Secrets } from "./types";
 
 const secretsManager = new SecretsManager();
 
-export const dependencies = async (secretArn: string) => {
+const buildDependencies = async (
+  secretArn: string
+): Promise<{ algorandClient: AlgorandClient }> => {
+  if (!secretArn) {
+    throw Error("Environment variable secretArn is not set");
+  }
   const secrets = await secretsManager
     .getSecretValue({ SecretId: secretArn })
     .promise();
@@ -21,3 +26,5 @@ export const dependencies = async (secretArn: string) => {
 
   return { algorandClient };
 };
+
+export default buildDependencies;

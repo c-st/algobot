@@ -1,4 +1,4 @@
-import { dependencies } from "../dependencies";
+import buildDependencies from "../dependencies";
 import {
   DetermineTimeToWaitResult,
   RewardCollectionParameters,
@@ -12,9 +12,16 @@ export const handler = async (
     `Estimating reward collection time for ${address} (at least ${minimumRewardToCollect} ALGO)`,
     event
   );
-  const { algorandClient } = await dependencies(process.env.SECRET_ARN!);
+  const { algorandClient } = await buildDependencies(process.env.SECRET_ARN!);
 
   const accountState = await algorandClient.getAccountState(address);
+  if (accountState.pendingRewards >= minimumRewardToCollect) {
+    return {
+      waitTimeSeconds: 0,
+      ...event,
+    };
+  }
+
   console.log("determineTimeToWait", { event, accountState });
 
   /**
