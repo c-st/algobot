@@ -5,6 +5,8 @@ import {
   RewardCollectionParameters,
 } from "../types";
 
+const MINIMUM_WAIT_TIME = 5 * 60;
+
 export const handler = async (
   event: RewardCollectionParameters
 ): Promise<DetermineTimeToWaitResult> => {
@@ -20,7 +22,7 @@ export const handler = async (
   // Already ready to claim?
   if (accountState.pendingRewards >= minimumRewardToCollect) {
     return {
-      waitTimeSeconds: 0,
+      waitTimeSeconds: MINIMUM_WAIT_TIME,
       ...event,
     };
   }

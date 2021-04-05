@@ -27,7 +27,7 @@ describe("collectRewards", () => {
     });
 
     expect(await handler(parameters)).toStrictEqual({
-      collectedReward: undefined,
+      remainingFeeBalance: 0.98,
       address: "1234ABC",
       minimumRewardToCollect: 2,
     });
@@ -45,14 +45,15 @@ describe("collectRewards", () => {
       amountWithoutPendingRewards: 200,
       pendingRewards: 5,
     });
+    mockAlgorandClient.sendTransaction.mockResolvedValue("TXID");
 
     const result = await handler(parameters);
 
     expect(mockAlgorandClient.sendTransaction).toHaveBeenCalledWith("1234ABC");
-
     expect(result).toStrictEqual({
       collectedReward: 5,
-      remainingFeeBalance: 1.003,
+      transactionId: "TXID",
+      remainingFeeBalance: 0.98,
       address: "1234ABC",
       minimumRewardToCollect: 2,
     });

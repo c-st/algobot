@@ -17,5 +17,6 @@ export type DetermineTimeToWaitResult = RewardCollectionParameters & {
 
 export type CollectRewardResult = RewardCollectionParameters & {
   collectedReward?: number;
-  remainingFeeBalance?: number;
+  transactionId?: string;
+  remainingFeeBalance: number;
 };

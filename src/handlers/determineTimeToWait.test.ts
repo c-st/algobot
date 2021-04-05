@@ -26,7 +26,7 @@ describe("determineTimeToWait", () => {
     });
 
     expect(await handler(parameters)).toStrictEqual({
-      waitTimeSeconds: 0,
+      waitTimeSeconds: 300,
       address: "1234ABC",
       minimumRewardToCollect: 2,
     });

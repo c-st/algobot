@@ -11,6 +11,7 @@ export const handler = async (
   );
 
   const { algorandClient } = await buildDependencies(process.env.SECRET_ARN!);
+  const remainingFeeBalance = 0.98; // TODO: fetch for address
   const accountState = await algorandClient.getAccountState(address);
 
   // Pending rewards have been claimed in the meanwhile
@@ -21,7 +22,7 @@ export const handler = async (
     });
 
     return {
-      collectedReward: undefined,
+      remainingFeeBalance,
       ...event,
     };
   }
@@ -29,11 +30,11 @@ export const handler = async (
   // retrieve + update fee balance (dynamodb)
 
   const txId = await algorandClient.sendTransaction(address);
-  console.log("Sent a transaction to claim rewards", { txId });
 
   return {
     collectedReward: accountState.pendingRewards,
-    remainingFeeBalance: 1.003,
+    transactionId: txId,
+    remainingFeeBalance,
     ...event,
   };
 };
