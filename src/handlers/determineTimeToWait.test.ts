@@ -32,5 +32,23 @@ describe("determineTimeToWait", () => {
     });
   });
 
-  // it("returns time calculated based on reward distribution", () => {});
+  it("returns time calculated based on reward distribution", async () => {
+    const parameters = {
+      address: "1234ABC",
+      minimumRewardToCollect: 1,
+    };
+
+    mockAlgorandClient.getAccountState.mockResolvedValue({
+      address: "1234ABC",
+      amount: 420,
+      amountWithoutPendingRewards: 420,
+      pendingRewards: 0,
+    });
+
+    expect(await handler(parameters)).toStrictEqual({ 
+      waitTimeSeconds: 21533 * 60,
+      address: "1234ABC",
+      minimumRewardToCollect: 1,
+    });
+  });
 });

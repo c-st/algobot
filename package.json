@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "yarn jest",
+    "test": "yarn jest --silent",
     "cdk": "AWS_PROFILE=algobot cdk"
   },
   "wallaby": {

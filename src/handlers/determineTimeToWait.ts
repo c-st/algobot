@@ -1,4 +1,5 @@
 import buildDependencies from "../dependencies";
+import { estimateMinutesUntilRewardCollection } from "../estimateMinutesUntilRewardCollection";
 import {
   DetermineTimeToWaitResult,
   RewardCollectionParameters,
@@ -15,6 +16,8 @@ export const handler = async (
   const { algorandClient } = await buildDependencies(process.env.SECRET_ARN!);
 
   const accountState = await algorandClient.getAccountState(address);
+
+  // Already ready to claim?
   if (accountState.pendingRewards >= minimumRewardToCollect) {
     return {
       waitTimeSeconds: 0,
@@ -22,17 +25,17 @@ export const handler = async (
     };
   }
 
-  console.log("determineTimeToWait", { event, accountState });
+  // Calculate remaining time based on current balance
+  const additionalAlgoNeeded =
+    minimumRewardToCollect - accountState.pendingRewards;
 
-  /**
-   * - fetch claimable rewards for address
-   * - fetch balance for address
-   * - calculate rewards/time based on balance
-   * - return time to match minimumRewardToCollect
-   */
+  const minutesUntilRewardCollection = estimateMinutesUntilRewardCollection(
+    accountState.amountWithoutPendingRewards,
+    additionalAlgoNeeded
+  );
 
   return {
-    waitTimeSeconds: 15,
+    waitTimeSeconds: minutesUntilRewardCollection * 60,
     ...event,
   };
 };
