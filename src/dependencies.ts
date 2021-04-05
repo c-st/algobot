@@ -1,8 +1,10 @@
 import { AlgorandClient } from "./clients/AlgorandClient";
 import { SecretsManager } from "aws-sdk";
 import { Secrets } from "./types";
+import { GetSecretValueResponse } from "aws-sdk/clients/secretsmanager";
 
 const secretsManager = new SecretsManager();
+let secretResponse: GetSecretValueResponse;
 
 const buildDependencies = async (
   secretArn: string
@@ -10,12 +12,13 @@ const buildDependencies = async (
   if (!secretArn) {
     throw Error("Environment variable secretArn is not set");
   }
-  const secrets = await secretsManager
-    .getSecretValue({ SecretId: secretArn })
-    .promise();
+  secretResponse =
+    secretResponse === undefined
+      ? await secretsManager.getSecretValue({ SecretId: secretArn }).promise()
+      : secretResponse;
 
   const { algodApiKey, algodApiServer } = JSON.parse(
-    secrets.SecretString!
+    secretResponse.SecretString!
   ) as Secrets;
 
   if (!algodApiKey || !algodApiServer) {

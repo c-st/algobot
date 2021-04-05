@@ -35,7 +35,8 @@ export class AlgorandClient {
       "pending-rewards": pendingRewards,
     } = state;
 
-    console.log(state);
+    const params = await this.algodClient.getTransactionParams().do();
+    console.log(params);
 
     return {
       address,
@@ -46,4 +47,6 @@ export class AlgorandClient {
       pendingRewards: AlgoSdk.microalgosToAlgos(pendingRewards),
     };
   }
+
+  // sending a tx: https://github.com/PureStake/api-examples/blob/master/javascript-examples/v2/algod_submit_tx.js
 }
