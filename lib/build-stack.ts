@@ -25,6 +25,7 @@ export class BuildStack extends CDK.Stack {
     const synthAction = Pipelines.SimpleSynthAction.standardYarnSynth({
       sourceArtifact,
       cloudAssemblyArtifact,
+      buildCommand: "yarn install --frozen-lockfile && yarn test",
     });
 
     const pipeline = new Pipelines.CdkPipeline(this, "Pipeline", {
@@ -38,17 +39,17 @@ export class BuildStack extends CDK.Stack {
     const testStage = pipeline.addApplicationStage(testApp);
     const appApiUrl = pipeline.stackOutput(testApp.urlOutput);
 
-    testStage.addActions(
-      new Pipelines.ShellScriptAction({
-        actionName: "UnitTests",
-        runOrder: testStage.nextSequentialRunOrder(),
-        additionalArtifacts: [sourceArtifact],
-        commands: ["yarn install --frozen-lockfile", "yarn test"],
-        useOutputs: {
-          API_URL: appApiUrl,
-        },
-      })
-    );
+    // testStage.addActions(
+    //   new Pipelines.ShellScriptAction({
+    //     actionName: "UnitTests",
+    //     runOrder: testStage.nextSequentialRunOrder(),
+    //     additionalArtifacts: [sourceArtifact],
+    //     commands: ["yarn install --frozen-lockfile", "yarn test"],
+    //     useOutputs: {
+    //       API_URL: appApiUrl,
+    //     },
+    //   })
+    // );
 
     // Production stage
     // const prodApp = new AlgobotStage(this, "Prod");

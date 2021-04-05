@@ -13,6 +13,7 @@ export const handler = async (
   const { algorandClient } = await buildDependencies(process.env.SECRET_ARN!);
   const accountState = await algorandClient.getAccountState(address);
 
+  // Pending rewards have been claimed in the meanwhile
   if (accountState.pendingRewards < minimumRewardToCollect) {
     console.info("Account is not yet ready to claim rewards", {
       accountState,
@@ -28,7 +29,7 @@ export const handler = async (
   // retrieve + update fee balance (dynamodb)
 
   const txId = await algorandClient.sendTransaction(address);
-  console.log("sent a tx", { txId });
+  console.log("Sent a transaction to claim rewards", { txId });
 
   return {
     collectedReward: accountState.pendingRewards,
