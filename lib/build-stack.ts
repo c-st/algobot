@@ -36,18 +36,13 @@ export class BuildStack extends CDK.Stack {
 
     // Test stage
     const testApp = new AlgobotStage(this, "Test");
-    pipeline.addApplicationStage(testApp);
+    const testStage = pipeline.addApplicationStage(testApp);
     // const appApiUrl = pipeline.stackOutput(testApp.urlOutput);
 
     // testStage.addActions(
-    //   new Pipelines.ShellScriptAction({
-    //     actionName: "UnitTests",
+    //   new ManualApprovalAction({
+    //     actionName: "ManualApproval",
     //     runOrder: testStage.nextSequentialRunOrder(),
-    //     additionalArtifacts: [sourceArtifact],
-    //     commands: ["yarn install --frozen-lockfile", "yarn test"],
-    //     useOutputs: {
-    //       API_URL: appApiUrl,
-    //     },
     //   })
     // );
 

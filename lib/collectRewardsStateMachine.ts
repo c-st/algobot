@@ -34,7 +34,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
 
   const determineTimeToWait = new SFTasks.LambdaInvoke(
     stack,
-    "Determine time to wait",
+    "Fetch account information",
     {
       lambdaFunction: determineTimeToWaitHandler,
       outputPath: "$.Payload",
@@ -66,7 +66,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
     .next(waitForRewardCollection)
     .next(collectReward)
     .next(
-      new SF.Choice(stack, "Verify remaining fee balance")
+      new SF.Choice(stack, "Check fee balance")
         .when(
           SF.Condition.numberGreaterThanEquals("$.remainingFeeBalance", 0.001),
           determineTimeToWait
