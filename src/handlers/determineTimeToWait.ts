@@ -23,7 +23,8 @@ export const handler = async (
   if (accountState.pendingRewards >= minimumRewardToCollect) {
     return {
       waitTimeSeconds: MINIMUM_WAIT_TIME,
-      ...event,
+      address,
+      minimumRewardToCollect,
     };
   }
 
@@ -38,6 +39,7 @@ export const handler = async (
 
   return {
     waitTimeSeconds: minutesUntilRewardCollection * 60,
-    ...event,
+    address,
+    minimumRewardToCollect,
   };
 };

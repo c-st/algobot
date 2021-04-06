@@ -36,8 +36,8 @@ export class BuildStack extends CDK.Stack {
 
     // Test stage
     const testApp = new AlgobotStage(this, "Test");
-    const testStage = pipeline.addApplicationStage(testApp);
-    const appApiUrl = pipeline.stackOutput(testApp.urlOutput);
+    pipeline.addApplicationStage(testApp);
+    // const appApiUrl = pipeline.stackOutput(testApp.urlOutput);
 
     // testStage.addActions(
     //   new Pipelines.ShellScriptAction({

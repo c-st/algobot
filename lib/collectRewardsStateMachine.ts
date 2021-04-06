@@ -5,6 +5,7 @@ import * as LambdaNodeJs from "@aws-cdk/aws-lambda-nodejs";
 import { AlgobotStack, DEFAULT_LAMBDA_SETTINGS } from "./algobot-stack";
 
 export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
+  // Fetch account information (retrieve account information, estimate wait time)
   const determineTimeToWaitHandler = new LambdaNodeJs.NodejsFunction(
     stack,
     "DetermineTimeToWait",
@@ -67,17 +68,13 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
     .next(
       new SF.Choice(stack, "Verify remaining fee balance")
         .when(
-          SF.Condition.numberGreaterThanEquals(
-            "$.remainingFeeBalance",
-            0.001
-          ),
+          SF.Condition.numberGreaterThanEquals("$.remainingFeeBalance", 0.001),
           determineTimeToWait
         )
         .otherwise(insufficientBalanceFail)
     );
 
   new SF.StateMachine(stack, "CollectRewardsStateMachine", {
-    stateMachineName: "CollectRewardsStateMachine",
     stateMachineType: SF.StateMachineType.STANDARD,
     tracingEnabled: true,
     definition,

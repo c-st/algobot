@@ -23,7 +23,8 @@ export const handler = async (
 
     return {
       remainingFeeBalance,
-      ...event,
+      address,
+      minimumRewardToCollect,
     };
   }
 
@@ -35,6 +36,7 @@ export const handler = async (
     collectedReward: accountState.pendingRewards,
     transactionId: txId,
     remainingFeeBalance,
-    ...event,
+    address,
+    minimumRewardToCollect,
   };
 };
