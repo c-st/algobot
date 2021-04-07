@@ -23,7 +23,7 @@ export const handler = async (
   // Already ready to claim?
   if (accountState.pendingRewards >= minimumRewardToCollect) {
     return {
-      attemptRewardCollectionAt: getIsoDateInFuture(
+      nextRewardCollection: getIsoDateInFuture(
         MINIMUM_WAIT_TIME_MINUTES
       ),
       address,
@@ -41,7 +41,7 @@ export const handler = async (
   );
 
   return {
-    attemptRewardCollectionAt: getIsoDateInFuture(
+    nextRewardCollection: getIsoDateInFuture(
       minutesUntilRewardCollection
     ),
     address,

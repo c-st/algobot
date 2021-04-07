@@ -41,16 +41,21 @@ export class AlgobotStack extends CDK.Stack {
       }
     );
 
-    const api = new ApiGateway.LambdaRestApi(this, "RestApi", {
+    const api = new ApiGateway.RestApi(this, "RestApi", {
       restApiName: `${props.stackName}-Api`,
-      handler: apiRequestHandler,
     });
-    // api.root.addResource("collection");
 
-    /**
-     * REST Endpoints:
-     * 
-     */
+    const rewardCollectionEndpoint = api.root.addResource("reward-collection");
+
+    rewardCollectionEndpoint.addMethod(
+      "GET",
+      new ApiGateway.LambdaIntegration(apiRequestHandler)
+    );
+
+    rewardCollectionEndpoint.addMethod(
+      "PUT",
+      new ApiGateway.LambdaIntegration(apiRequestHandler)
+    );
 
     this.urlOutput = new CDK.CfnOutput(this, "url", {
       value: api.url,

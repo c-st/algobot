@@ -1,0 +1,16 @@
+@baseUrl = https://s00cvn3ov5.execute-api.eu-central-1.amazonaws.com/prod/
+@address= ABCD123
+
+
+### Get rewards settings
+GET {{baseUrl}}/reward-collection?address={{address}} HTTP/1.1
+content-type: application/json
+
+### Update rewards settings
+PUT {{baseUrl}}//reward-collection?address={{address}} HTTP/1.1
+content-type: application/json
+
+{
+  "enabled": true,
+  "minimumRewardsToCollect": 3
+}

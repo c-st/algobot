@@ -1,6 +1,5 @@
 import { handler } from "./determineTimeToWait";
 import * as dependencies from "../dependencies";
-import dayjs from "dayjs";
 
 const mockAlgorandClient = {
   getAccountState: jest.fn(),
@@ -28,12 +27,8 @@ describe("determineTimeToWait", () => {
 
     const response = await handler(parameters);
 
-    expect(
-      dayjs(response.attemptRewardCollectionAt).diff(dayjs(), "minute")
-    ).toBe(2);
-
     expect(response).toStrictEqual({
-      attemptRewardCollectionAt: expect.anything(),
+      nextRewardCollection: expect.anything(),
       address: "1234ABC",
       minimumRewardToCollect: 2,
     });
@@ -54,12 +49,8 @@ describe("determineTimeToWait", () => {
 
     const response = await handler(parameters);
 
-    expect(
-      dayjs(response.attemptRewardCollectionAt).diff(dayjs(), "minute")
-    ).toBe(21533);
-
     expect(response).toStrictEqual({
-      attemptRewardCollectionAt: expect.anything(),
+      nextRewardCollection: expect.anything(),
       address: "1234ABC",
       minimumRewardToCollect: 1,
     });

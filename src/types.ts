@@ -4,6 +4,8 @@ export interface Secrets {
   mnemonic: string;
 }
 
+// State Machine
+
 export type AlgoAddress = string;
 
 export type RewardCollectionParameters = {
@@ -12,11 +14,18 @@ export type RewardCollectionParameters = {
 };
 
 export type DetermineTimeToWaitResult = RewardCollectionParameters & {
-  attemptRewardCollectionAt: string; // ISO-Date
+  nextRewardCollection: string;
 };
 
 export type CollectRewardResult = RewardCollectionParameters & {
   collectedReward?: number;
   transactionId?: string;
   remainingFeeBalance: number;
+};
+
+// API
+
+export type RewardCollectionRequest = {
+  enabled: boolean;
+  minimumRewardsToCollect: number;
 };

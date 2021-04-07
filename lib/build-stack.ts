@@ -29,6 +29,7 @@ export class BuildStack extends CDK.Stack {
     });
 
     const pipeline = new Pipelines.CdkPipeline(this, "Pipeline", {
+      pipelineName: "AlgobotPipeline",
       cloudAssemblyArtifact,
       sourceAction,
       synthAction,
@@ -36,7 +37,7 @@ export class BuildStack extends CDK.Stack {
 
     // Test stage
     const testApp = new AlgobotStage(this, "Test");
-    const testStage = pipeline.addApplicationStage(testApp);
+    pipeline.addApplicationStage(testApp);
     // const appApiUrl = pipeline.stackOutput(testApp.urlOutput);
 
     // testStage.addActions(
