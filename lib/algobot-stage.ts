@@ -7,11 +7,12 @@ export class AlgobotStage extends CDK.Stage {
   constructor(scope: CDK.Construct, id: string, props?: CDK.StackProps) {
     super(scope, id, props);
 
-    const app = new AlgobotStack(this, "AlgobotApp", {
+    const app = new AlgobotStack(this, "Algobot", {
       tags: {
         Application: "Algobot",
         Environment: id,
       },
+      stackName: `Algobot${id}`,
     });
 
     this.urlOutput = app.urlOutput;

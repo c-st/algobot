@@ -1,23 +1,28 @@
+import * as path from "path";
 import * as CDK from "@aws-cdk/core";
 import * as Lambda from "@aws-cdk/aws-lambda";
+import * as ApiGateway from "@aws-cdk/aws-apigateway";
 import * as SecretsManager from "@aws-cdk/aws-secretsmanager";
-import { buildCollectRewardsStateMachine } from "./collectRewardsStateMachine";
+import * as LambdaNodeJs from "@aws-cdk/aws-lambda-nodejs";
+import { buildCollectRewardsStateMachine } from "./buildCollectRewardsStateMachine";
 import { NodejsFunctionProps } from "@aws-cdk/aws-lambda-nodejs";
 
 export const DEFAULT_LAMBDA_SETTINGS: Partial<NodejsFunctionProps> = {
   timeout: CDK.Duration.seconds(2),
-  memorySize: 1024,
+  memorySize: 512,
   tracing: Lambda.Tracing.ACTIVE,
   runtime: Lambda.Runtime.NODEJS_14_X,
 };
+
 export class AlgobotStack extends CDK.Stack {
   readonly secret: SecretsManager.Secret;
   readonly urlOutput: CDK.CfnOutput;
 
-  constructor(scope: CDK.Construct, id: string, props?: CDK.StackProps) {
+  constructor(scope: CDK.Construct, id: string, props: CDK.StackProps) {
     super(scope, id, props);
 
     this.secret = new SecretsManager.Secret(this, "Secret", {
+      secretName: `${props.stackName}-Secrets`,
       generateSecretString: {
         secretStringTemplate: JSON.stringify({}),
         generateStringKey: "secret",
@@ -25,15 +30,30 @@ export class AlgobotStack extends CDK.Stack {
       removalPolicy: CDK.RemovalPolicy.RETAIN,
     });
 
-    // const api = new ApiGateway.LambdaRestApi(this, "Gateway", {
-    //   description: "Endpoint for a simple Lambda-powered web service",
-    //   handler: helloWorldHandler,
-    // });
-
     buildCollectRewardsStateMachine(this);
 
+    const apiRequestHandler = new LambdaNodeJs.NodejsFunction(
+      this,
+      "ApiRequestHandler",
+      {
+        entry: path.join(__dirname, "../src/lambdas/apiRequestHandler.ts"),
+        ...DEFAULT_LAMBDA_SETTINGS,
+      }
+    );
+
+    const api = new ApiGateway.LambdaRestApi(this, "RestApi", {
+      restApiName: `${props.stackName}-Api`,
+      handler: apiRequestHandler,
+    });
+    // api.root.addResource("collection");
+
+    /**
+     * REST Endpoints:
+     * 
+     */
+
     this.urlOutput = new CDK.CfnOutput(this, "url", {
-      value: "tbd", // api.url,
+      value: api.url,
     });
   }
 }

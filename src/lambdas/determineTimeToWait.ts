@@ -38,7 +38,7 @@ export const handler = async (
   );
 
   return {
-    waitTimeSeconds: minutesUntilRewardCollection * 60,
+    waitTimeSeconds: minutesUntilRewardCollection * 60, // return a timestamp instead
     address,
     minimumRewardToCollect,
   };

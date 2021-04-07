@@ -10,7 +10,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
     stack,
     "DetermineTimeToWait",
     {
-      entry: path.join(__dirname, "../src/handlers/determineTimeToWait.ts"),
+      entry: path.join(__dirname, "../src/lambdas/determineTimeToWait.ts"),
       environment: {
         SECRET_ARN: stack.secret.secretArn,
       },
@@ -23,7 +23,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
     stack,
     "CollectReward",
     {
-      entry: path.join(__dirname, "../src/handlers/collectReward.ts"),
+      entry: path.join(__dirname, "../src/lambdas/collectReward.ts"),
       environment: {
         SECRET_ARN: stack.secret.secretArn,
       },
@@ -38,6 +38,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
     {
       lambdaFunction: determineTimeToWaitHandler,
       outputPath: "$.Payload",
+      retryOnServiceExceptions: false,
     }
   );
 
@@ -52,6 +53,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
   const collectReward = new SFTasks.LambdaInvoke(stack, "Collect rewards", {
     lambdaFunction: collectRewardHandler,
     outputPath: "$.Payload",
+    retryOnServiceExceptions: false,
   });
 
   const insufficientBalanceFail = new SF.Fail(
@@ -75,6 +77,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
     );
 
   new SF.StateMachine(stack, "CollectRewardsStateMachine", {
+    stateMachineName: `${stack.stackName}-CollectRewards`,
     stateMachineType: SF.StateMachineType.STANDARD,
     tracingEnabled: true,
     definition,
