@@ -33,6 +33,7 @@
     "@types/node": "^14.14.37",
     "aws-cdk": "1.97.0",
     "aws-xray-sdk-core": "^3.2.0",
+    "dayjs": "^1.10.4",
     "esbuild": "0",
     "jest": "^26.4.2",
     "source-map-support": "^0.5.16",

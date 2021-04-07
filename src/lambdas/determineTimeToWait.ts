@@ -4,8 +4,9 @@ import {
   DetermineTimeToWaitResult,
   RewardCollectionParameters,
 } from "../types";
+import dayjs from "dayjs";
 
-const MINIMUM_WAIT_TIME = 5 * 60;
+const MINIMUM_WAIT_TIME_MINUTES = 2;
 
 export const handler = async (
   event: RewardCollectionParameters
@@ -22,13 +23,15 @@ export const handler = async (
   // Already ready to claim?
   if (accountState.pendingRewards >= minimumRewardToCollect) {
     return {
-      waitTimeSeconds: MINIMUM_WAIT_TIME,
+      attemptRewardCollectionAt: getIsoDateInFuture(
+        MINIMUM_WAIT_TIME_MINUTES
+      ),
       address,
       minimumRewardToCollect,
     };
   }
 
-  // Calculate remaining time based on current balance
+  // Calculate remaining time based on current balance:
   const additionalAlgoNeeded =
     minimumRewardToCollect - accountState.pendingRewards;
 
@@ -38,8 +41,14 @@ export const handler = async (
   );
 
   return {
-    waitTimeSeconds: minutesUntilRewardCollection * 60, // return a timestamp instead
+    attemptRewardCollectionAt: getIsoDateInFuture(
+      minutesUntilRewardCollection
+    ),
     address,
     minimumRewardToCollect,
   };
+};
+
+export const getIsoDateInFuture = (minutesFromNow: number): string => {
+  return dayjs().add(minutesFromNow, "minutes").toISOString();
 };

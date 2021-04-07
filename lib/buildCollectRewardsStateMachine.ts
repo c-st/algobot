@@ -46,7 +46,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
     stack,
     "Wait for reward collection",
     {
-      time: SF.WaitTime.secondsPath("$.waitTimeSeconds"),
+      time: SF.WaitTime.timestampPath("$.attemptRewardCollectionAt"),
     }
   );
 

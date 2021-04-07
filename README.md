@@ -6,7 +6,6 @@
 ## Features
 
 1. Regularly send transactions to an Algorand account in order to make it claim its reward.
-
 2. Transaction fees are paid by depositing Algo from the Algorand account for which rewards are to be collected.
 
 - Enter Algo address
@@ -21,6 +20,11 @@
 - Run CDK bootstrap: `yarn cdk bootstrap --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess`
 - Deploy build stack: `yarn cdk deploy AlgobotBuildStack`
 
+## Step Functions
+
+[Step Functions local](https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local-docker.html)
+[VSCode support](https://aws.amazon.com/blogs/compute/aws-step-functions-support-in-visual-studio-code/)
+
 ## Infrastructure
 
 AWS Serverless
@@ -29,3 +33,4 @@ w. Amplify Web-App (Vue + Vite + Typescript)
 ## Future optimizations
 
 - Determine optimal interval for sending 0.00 ALGO (rewards should be significantly larger than transaction fees)
+- Notify users if deposited fee is about to run out

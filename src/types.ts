@@ -12,7 +12,7 @@ export type RewardCollectionParameters = {
 };
 
 export type DetermineTimeToWaitResult = RewardCollectionParameters & {
-  waitTimeSeconds: number;
+  attemptRewardCollectionAt: string; // ISO-Date
 };
 
 export type CollectRewardResult = RewardCollectionParameters & {
