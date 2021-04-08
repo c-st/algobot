@@ -1,9 +1,9 @@
 import * as CDK from "@aws-cdk/core";
-import * as ACM from "@aws-cdk/aws-certificatemanager";
 import { AlgobotStack } from "./algobot-stack";
 
 interface AlgobotStageProps extends CDK.StackProps {
   acmCertificateArn: string;
+  secretArn: string;
   apiDomainName: string;
 }
 
@@ -13,7 +13,7 @@ export class AlgobotStage extends CDK.Stage {
   constructor(scope: CDK.Construct, id: string, props: AlgobotStageProps) {
     super(scope, id, props);
 
-    const { apiDomainName, acmCertificateArn } = props;
+    const { apiDomainName, acmCertificateArn, secretArn } = props;
 
     const app = new AlgobotStack(this, "Algobot", {
       tags: {
@@ -23,6 +23,7 @@ export class AlgobotStage extends CDK.Stage {
       stackName: `Algobot${id}`,
       apiDomainName,
       acmCertificateArn,
+      secretArn,
     });
 
     this.urlOutput = app.urlOutput;

@@ -1,13 +1,12 @@
 import * as CDK from "@aws-cdk/core";
-import * as ACM from "@aws-cdk/aws-certificatemanager";
 import * as CodePipeline from "@aws-cdk/aws-codepipeline";
 import * as CodePipelineActions from "@aws-cdk/aws-codepipeline-actions";
 import * as Pipelines from "@aws-cdk/pipelines";
 import { AlgobotStage } from "./algobot-stage";
-import { Fn } from "@aws-cdk/core";
 
 interface BuildStackProps extends CDK.StackProps {
   acmCertificateArnOutput: CDK.CfnOutput;
+  // add all custom properties here
 }
 
 export class BuildStack extends CDK.Stack {
@@ -52,6 +51,8 @@ export class BuildStack extends CDK.Stack {
     const testApp = new AlgobotStage(this, "Test", {
       acmCertificateArn,
       apiDomainName: "api-test.algotools.io",
+      secretArn:
+        "arn:aws:secretsmanager:eu-central-1:075374763076:secret:AlgobotTest-Secrets-JNOnOP",
     });
     pipeline.addApplicationStage(testApp);
     // const appApiUrl = pipeline.stackOutput(testApp.urlOutput);
@@ -67,6 +68,8 @@ export class BuildStack extends CDK.Stack {
     const prodApp = new AlgobotStage(this, "Prod", {
       acmCertificateArn,
       apiDomainName: "api.algotools.io",
+      secretArn:
+        "arn:aws:secretsmanager:eu-central-1:075374763076:secret:AlgobotProd-Secrets-7s0zt7",
     });
     pipeline.addApplicationStage(prodApp);
   }

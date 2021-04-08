@@ -18,24 +18,24 @@ export const DEFAULT_LAMBDA_SETTINGS: Partial<NodejsFunctionProps> = {
 
 interface AlgobotStackProps extends CDK.StackProps {
   acmCertificateArn: string;
+  secretArn: string;
   apiDomainName: string;
 }
 
 export class AlgobotStack extends CDK.Stack {
-  readonly secret: SecretsManager.Secret;
+  readonly secret: SecretsManager.ISecret;
   readonly urlOutput: CDK.CfnOutput;
 
   constructor(scope: CDK.Construct, id: string, props: AlgobotStackProps) {
     super(scope, id, props);
 
-    this.secret = new SecretsManager.Secret(this, "Secret", {
-      secretName: `${props.stackName}-Secrets`,
-      generateSecretString: {
-        secretStringTemplate: JSON.stringify({}),
-        generateStringKey: "secret",
-      },
-      removalPolicy: CDK.RemovalPolicy.RETAIN,
-    });
+    this.secret = SecretsManager.Secret.fromSecretAttributes(
+      this,
+      "ImportedSecret",
+      {
+        secretCompleteArn: props.secretArn,
+      }
+    );
 
     buildCollectRewardsStateMachine(this);
 
