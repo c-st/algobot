@@ -1,13 +1,19 @@
 import * as CDK from "@aws-cdk/core";
+import * as ACM from "@aws-cdk/aws-certificatemanager";
 import * as CodePipeline from "@aws-cdk/aws-codepipeline";
 import * as CodePipelineActions from "@aws-cdk/aws-codepipeline-actions";
 import * as Pipelines from "@aws-cdk/pipelines";
 import { AlgobotStage } from "./algobot-stage";
+import { Fn } from "@aws-cdk/core";
+
+interface BuildStackProps extends CDK.StackProps {
+  acmCertificateArnOutput: CDK.CfnOutput;
+}
 
 export class BuildStack extends CDK.Stack {
   static STACK_NAME = "AlgobotBuildStack";
 
-  constructor(scope: CDK.Construct, props?: CDK.StackProps) {
+  constructor(scope: CDK.Construct, props: BuildStackProps) {
     super(scope, BuildStack.STACK_NAME, props);
 
     const sourceArtifact = new CodePipeline.Artifact();
@@ -36,7 +42,17 @@ export class BuildStack extends CDK.Stack {
     });
 
     // Test stage
-    const testApp = new AlgobotStage(this, "Test");
+    // ACM.DnsValidatedCertificate
+
+    // const acmCertificate = Fn.importValue(
+    //   props.acmCertificateArnOutput.importValue
+    // );
+    const acmCertificateArn = props.acmCertificateArnOutput.importValue;
+
+    const testApp = new AlgobotStage(this, "Test", {
+      acmCertificateArn,
+      apiDomainName: "api-test.algotools.io",
+    });
     pipeline.addApplicationStage(testApp);
     // const appApiUrl = pipeline.stackOutput(testApp.urlOutput);
 
@@ -48,7 +64,10 @@ export class BuildStack extends CDK.Stack {
     // );
 
     // Production stage
-    const prodApp = new AlgobotStage(this, "Prod");
+    const prodApp = new AlgobotStage(this, "Prod", {
+      acmCertificateArn,
+      apiDomainName: "api.algotools.io",
+    });
     pipeline.addApplicationStage(prodApp);
   }
 }
