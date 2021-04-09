@@ -99,7 +99,7 @@ export class AlgobotStack extends CDK.Stack {
       this,
       "ApiRequestHandler",
       {
-        entry: path.join(__dirname, "../src/lambdas/apiRequestHandler.ts"),
+        entry: path.join(__dirname, "../src/usecases/reward-collection/apiRequestHandler.ts"),
         environment: { ALGOADDRESSES_TABLENAME: algoAddressesTable.tableName },
         ...DEFAULT_LAMBDA_SETTINGS,
       }

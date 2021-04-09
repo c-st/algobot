@@ -10,7 +10,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack): SF.StateMa
     stack,
     "DetermineTimeToWait",
     {
-      entry: path.join(__dirname, "../src/lambdas/determineTimeToWait.ts"),
+      entry: path.join(__dirname, "../src/usecases/reward-collection/determineTimeToWait.ts"),
       environment: {
         SECRET_ARN: stack.secret.secretArn,
       },
@@ -23,7 +23,7 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack): SF.StateMa
     stack,
     "CollectReward",
     {
-      entry: path.join(__dirname, "../src/lambdas/collectReward.ts"),
+      entry: path.join(__dirname, "../src/usecases/reward-collection/collectReward.ts"),
       environment: {
         SECRET_ARN: stack.secret.secretArn,
       },

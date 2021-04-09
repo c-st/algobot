@@ -1,9 +1,6 @@
-import buildDependencies from "../dependencies";
-import { estimateMinutesUntilRewardCollection } from "../estimateMinutesUntilRewardCollection";
-import {
-  DetermineTimeToWaitResult,
-  RewardCollectionParameters,
-} from "../types";
+import buildDependencies from "../../dependencies";
+import { estimateMinutesUntilRewardCollection } from "./estimateMinutesUntilRewardCollection";
+import { DetermineTimeToWaitResult, RewardCollectionParameters } from "./types";
 import dayjs from "dayjs";
 
 const MINIMUM_WAIT_TIME_MINUTES = 2;
@@ -23,9 +20,7 @@ export const handler = async (
   // Already ready to claim?
   if (accountState.pendingRewards >= minimumRewardToCollect) {
     return {
-      nextRewardCollection: getIsoDateInFuture(
-        MINIMUM_WAIT_TIME_MINUTES
-      ),
+      nextRewardCollection: getIsoDateInFuture(MINIMUM_WAIT_TIME_MINUTES),
       address,
       minimumRewardToCollect,
     };
@@ -41,9 +36,7 @@ export const handler = async (
   );
 
   return {
-    nextRewardCollection: getIsoDateInFuture(
-      minutesUntilRewardCollection
-    ),
+    nextRewardCollection: getIsoDateInFuture(minutesUntilRewardCollection),
     address,
     minimumRewardToCollect,
   };

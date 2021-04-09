@@ -2,8 +2,8 @@ import * as Lambda from "aws-lambda";
 import {
   getAddressSettings,
   upsertAddressSettings,
-} from "../clients/dynamodb/algoAddressStore";
-import { UpdateRewardCollectionSettingsCommand } from "../types";
+} from "../../clients/dynamodb/algoAddressStore";
+import { UpdateRewardCollectionSettingsCommand } from "./types";
 
 export const handler = async (
   event: Lambda.APIGatewayProxyEvent

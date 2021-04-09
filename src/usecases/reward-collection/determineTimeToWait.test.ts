@@ -1,5 +1,5 @@
 import { handler } from "./determineTimeToWait";
-import * as dependencies from "../dependencies";
+import * as dependencies from "../../dependencies";
 
 const mockAlgorandClient = {
   getAccountState: jest.fn(),

@@ -1,7 +1,5 @@
 import * as AlgoSdk from "algosdk";
-import { Transaction } from "algosdk";
 import * as AWSXRay from "aws-xray-sdk-core";
-import { AlgoAddress } from "../types";
 
 AWSXRay.captureHTTPsGlobal(require("https"), true);
 
@@ -10,6 +8,8 @@ export enum ApiServer {
   PURESTAKE_TESTNET = "https://testnet-algorand.api.purestake.io/ps2",
   PURESTAKE_MAINNET = "https://mainnet-algorand.api.purestake.io/ps2",
 }
+
+export type AlgoAddress = string;
 
 interface AccountState {
   address: AlgoAddress; // public key

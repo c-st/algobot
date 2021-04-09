@@ -1,5 +1,5 @@
-import buildDependencies from "../dependencies";
-import { CollectRewardResult, RewardCollectionParameters } from "../types";
+import buildDependencies from "../../dependencies";
+import { CollectRewardResult, RewardCollectionParameters } from "./types";
 
 export const handler = async (
   event: RewardCollectionParameters
