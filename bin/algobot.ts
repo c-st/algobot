@@ -8,6 +8,8 @@ const app = new cdk.App();
 
 const domainStack = new AlgotoolsDomainStack(app);
 const buildStack = new BuildStack(app, {
+  hostedZoneIdOutput: domainStack.hostedZoneIdOutput,
+  hostedZoneNameOutput: domainStack.hostedZoneNameOutput,
   acmCertificateArnOutput: domainStack.acmCertificateArnOutput,
 });
 

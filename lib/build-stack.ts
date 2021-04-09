@@ -6,6 +6,8 @@ import { AlgobotStage } from "./algobot-stage";
 
 interface BuildStackProps extends CDK.StackProps {
   acmCertificateArnOutput: CDK.CfnOutput;
+  hostedZoneIdOutput: CDK.CfnOutput;
+  hostedZoneNameOutput: CDK.CfnOutput;
   // add all custom properties here
 }
 
@@ -47,9 +49,13 @@ export class BuildStack extends CDK.Stack {
     //   props.acmCertificateArnOutput.importValue
     // );
     const acmCertificateArn = props.acmCertificateArnOutput.importValue;
+    const hostedZoneId = props.hostedZoneIdOutput.importValue;
+    const hostedZoneName = props.hostedZoneNameOutput.importValue;
 
     const testApp = new AlgobotStage(this, "Test", {
       acmCertificateArn,
+      hostedZoneId,
+      hostedZoneName,
       apiDomainName: "api-test.algotools.io",
       secretArn:
         "arn:aws:secretsmanager:eu-central-1:075374763076:secret:AlgobotTest-Secrets-JNOnOP",
@@ -67,6 +73,8 @@ export class BuildStack extends CDK.Stack {
     // Production stage
     const prodApp = new AlgobotStage(this, "Prod", {
       acmCertificateArn,
+      hostedZoneId,
+      hostedZoneName,
       apiDomainName: "api.algotools.io",
       secretArn:
         "arn:aws:secretsmanager:eu-central-1:075374763076:secret:AlgobotProd-Secrets-7s0zt7",

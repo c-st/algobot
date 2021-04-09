@@ -1,5 +1,7 @@
 import * as path from "path";
 import * as CDK from "@aws-cdk/core";
+import * as Route53 from "@aws-cdk/aws-route53";
+import * as Route53Targets from "@aws-cdk/aws-route53-targets";
 import * as ACM from "@aws-cdk/aws-certificatemanager";
 import * as Lambda from "@aws-cdk/aws-lambda";
 import * as ApiGateway from "@aws-cdk/aws-apigateway";
@@ -19,6 +21,8 @@ export const DEFAULT_LAMBDA_SETTINGS: Partial<NodejsFunctionProps> = {
 interface AlgobotStackProps extends CDK.StackProps {
   acmCertificateArn: string;
   secretArn: string;
+  hostedZoneId: string;
+  hostedZoneName: string;
   apiDomainName: string;
 }
 
@@ -54,6 +58,23 @@ export class AlgobotStack extends CDK.Stack {
         endpointType: EndpointType.EDGE,
         securityPolicy: SecurityPolicy.TLS_1_2,
       },
+    });
+
+    const zone = Route53.PublicHostedZone.fromHostedZoneAttributes(
+      this,
+      "HostedZone",
+      {
+        hostedZoneId: props.hostedZoneId,
+        zoneName: props.hostedZoneName,
+      }
+    );
+
+    new Route53.ARecord(this, "ApiARecord", {
+      zone,
+      recordName: "api.algotools.io",
+      target: Route53.RecordTarget.fromAlias(
+        new Route53Targets.ApiGateway(api)
+      ),
     });
 
     const apiRequestHandler = new LambdaNodeJs.NodejsFunction(

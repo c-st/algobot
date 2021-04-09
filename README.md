@@ -12,7 +12,24 @@
 - Set amount of minimum reward to harvest
 - Add funding (deposit ALGO for covering fees of 0.001 ALGO/transaction)
 
+[[doc/01 - Collect Rewards.md]]
+
+### Feature list
+
+- [x] Regularly collect rewards (based on Step function + Lambda)
+- [ ] API for configuring settings
+- [ ] Frontend for configuring settings
+- [ ] Fund account with transaction fees
+
+### Future optimizations
+
+- 2FA/password once address has been registered
+- Determine optimal interval for sending 0.00 ALGO (rewards should be significantly larger than transaction fees)
+- Notify users if deposited fee is about to run out
+
 ## Getting started
+
+### Initially bootstrap AWS Pipeline
 
 - Configure new AWS profile: `algobot`
 - Create GitHub personal access token (required permissions are `repo`, `admin:repo_hook`)
@@ -20,17 +37,12 @@
 - Run CDK bootstrap: `yarn cdk bootstrap --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess`
 - Deploy build stack: `yarn cdk deploy AlgobotBuildStack`
 
-## Step Functions
+### Frontend
+
+tbd: Amplify Web-App (Vue/Preact/? + Vite + Typescript)
+
+## Development notes
 
 [Step Functions local](https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local-docker.html)
 [VSCode support](https://aws.amazon.com/blogs/compute/aws-step-functions-support-in-visual-studio-code/)
-
-## Infrastructure
-
-AWS Serverless
-w. Amplify Web-App (Vue + Vite + Typescript)
-
-## Future optimizations
-
-- Determine optimal interval for sending 0.00 ALGO (rewards should be significantly larger than transaction fees)
-- Notify users if deposited fee is about to run out
+[Integration with EventBridge](https://docs.aws.amazon.com/step-functions/latest/dg/cw-events.html)
