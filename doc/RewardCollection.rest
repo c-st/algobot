@@ -1,5 +1,5 @@
-@baseUrl = https://mysdymw1pa.execute-api.eu-central-1.amazonaws.com/prod/
-# @baseUrl = https://api.algotools.io/prod/
+# @baseUrl = https://mysdymw1pa.execute-api.eu-central-1.amazonaws.com/prod/
+@baseUrl = https://api.algotools.io
 @address= ABCD123
 
 

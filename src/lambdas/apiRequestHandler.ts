@@ -1,10 +1,14 @@
 import * as Lambda from "aws-lambda";
+import {
+  getAddressSettings,
+  upsertAddressSettings,
+} from "../clients/dynamodb/algoAddressStore";
+import { UpdateRewardCollectionSettingsCommand } from "../types";
 
 export const handler = async (
   event: Lambda.APIGatewayProxyEvent
 ): Promise<Lambda.APIGatewayProxyResult> => {
   const { address } = event.queryStringParameters || {};
-
   if (!address) {
     return lambdaResult(400, {
       errorMessage: "Missing query parameter in request: address",
@@ -12,22 +16,49 @@ export const handler = async (
   }
 
   switch (event.httpMethod) {
-    case "GET":
-      break;
+    case "GET": {
+      const addressSettings = await getAddressSettings(address);
+      if (!addressSettings) {
+        return lambdaResult(404, {});
+      }
+      return lambdaResult(200, addressSettings);
+    }
 
-    case "PUT":
-      break;
+    case "PUT": {
+      // TODO: define and use JSONSchema for request
+      if (!event.body) {
+        return lambdaResult(400, {
+          errorMessage: "Missing request body",
+        });
+      }
+      const requestBody = JSON.parse(event.body);
+      const { enable, address, minimumRewardsToCollect } = requestBody;
+      if (enable === undefined || !address || !minimumRewardsToCollect) {
+        return lambdaResult(400, {
+          errorMessage: "Missing request body parameters",
+        });
+      } else {
+        await handleUpdateRewardCollectionSettingsCommand({
+          enable,
+          address,
+          minimumRewardsToCollect,
+        });
+        return lambdaResult(200, {});
+      }
+    }
   }
 
-  console.log("request", event);
+  return lambdaResult(400, { errorMessage: "Invalid request method" });
+};
 
-  /**
-   * manage reward collection settings:
-   *    GET /reward-collection?address=ABCD1
-   *    PUT /reward-collection?address=ABCD1 body: { enabled: boolean; minimumRewardsToCollect: number; }
-   */
-
-  return lambdaResult(200, {});
+const handleUpdateRewardCollectionSettingsCommand = async (
+  command: UpdateRewardCollectionSettingsCommand
+) => {
+  await upsertAddressSettings({
+    rewardCollectionEnabled: command.enable,
+    address: command.address,
+    minimumRewardsToCollect: command.minimumRewardsToCollect,
+  });
 };
 
 const lambdaResult = (

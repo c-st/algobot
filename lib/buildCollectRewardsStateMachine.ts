@@ -4,7 +4,7 @@ import * as SFTasks from "@aws-cdk/aws-stepfunctions-tasks";
 import * as LambdaNodeJs from "@aws-cdk/aws-lambda-nodejs";
 import { AlgobotStack, DEFAULT_LAMBDA_SETTINGS } from "./algobot-stack";
 
-export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
+export const buildCollectRewardsStateMachine = (stack: AlgobotStack): SF.StateMachine => {
   // Fetch account information (retrieve account information, estimate wait time)
   const determineTimeToWaitHandler = new LambdaNodeJs.NodejsFunction(
     stack,
@@ -76,10 +76,12 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack) => {
         .otherwise(insufficientBalanceFail)
     );
 
-  new SF.StateMachine(stack, "CollectRewardsStateMachine", {
+  const stateMachine = new SF.StateMachine(stack, "CollectRewardsStateMachine", {
     stateMachineName: `${stack.stackName}-CollectRewards`,
     stateMachineType: SF.StateMachineType.STANDARD,
     tracingEnabled: true,
     definition,
   });
+
+  return stateMachine;
 };

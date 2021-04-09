@@ -4,6 +4,7 @@ import * as Route53 from "@aws-cdk/aws-route53";
 import * as Route53Targets from "@aws-cdk/aws-route53-targets";
 import * as ACM from "@aws-cdk/aws-certificatemanager";
 import * as Lambda from "@aws-cdk/aws-lambda";
+import * as DynamoDB from "@aws-cdk/aws-dynamodb";
 import * as ApiGateway from "@aws-cdk/aws-apigateway";
 import * as SecretsManager from "@aws-cdk/aws-secretsmanager";
 import * as LambdaNodeJs from "@aws-cdk/aws-lambda-nodejs";
@@ -41,7 +42,7 @@ export class AlgobotStack extends CDK.Stack {
       }
     );
 
-    buildCollectRewardsStateMachine(this);
+    const stateMachine = buildCollectRewardsStateMachine(this);
 
     // Import certificate created in domain-stack
     const certificate = ACM.Certificate.fromCertificateArn(
@@ -80,14 +81,32 @@ export class AlgobotStack extends CDK.Stack {
       ),
     });
 
+    // Reward Collection
+
+    // DynamoDb
+    const algoAddressesTable = new DynamoDB.Table(this, "AlgoAddresses", {
+      tableName: `${props.stackName}-AlgoAddresses`,
+      partitionKey: {
+        name: "pk",
+        type: DynamoDB.AttributeType.STRING,
+      },
+      billingMode: DynamoDB.BillingMode.PAY_PER_REQUEST,
+      encryption: DynamoDB.TableEncryption.AWS_MANAGED,
+      removalPolicy: CDK.RemovalPolicy.DESTROY,
+    });
+
     const apiRequestHandler = new LambdaNodeJs.NodejsFunction(
       this,
       "ApiRequestHandler",
       {
         entry: path.join(__dirname, "../src/lambdas/apiRequestHandler.ts"),
+        environment: { ALGOADDRESSES_TABLENAME: algoAddressesTable.tableName },
         ...DEFAULT_LAMBDA_SETTINGS,
       }
     );
+    algoAddressesTable.grantReadWriteData(apiRequestHandler);
+    stateMachine.grantStartExecution(apiRequestHandler);
+    stateMachine.grantRead(apiRequestHandler);
 
     const rewardCollectionEndpoint = api.root.addResource("reward-collection");
 

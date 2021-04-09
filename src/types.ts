@@ -1,7 +1,14 @@
-export interface Secrets {
+export interface Secret {
   algodApiKey: string;
   algodApiServer: string;
   mnemonic: string;
+}
+
+export interface AlgoAddressSettings {
+  address: AlgoAddress;
+  rewardCollectionEnabled: boolean;
+  minimumRewardsToCollect?: number;
+  rewardCollectionExecutionId?: string;
 }
 
 // State Machine
@@ -25,7 +32,14 @@ export type CollectRewardResult = RewardCollectionParameters & {
 
 // API
 
-export type RewardCollectionRequest = {
-  enabled: boolean;
+export type RewardCollectionSettings = {
+  isEnabled: boolean;
+  address: AlgoAddress;
+  minimumRewardsToCollect: number;
+};
+
+export type UpdateRewardCollectionSettingsCommand = {
+  enable: boolean;
+  address: AlgoAddress;
   minimumRewardsToCollect: number;
 };

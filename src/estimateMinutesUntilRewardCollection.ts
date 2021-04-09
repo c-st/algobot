@@ -2,6 +2,7 @@ const PARTICIPATING_ALGOS = 5236812007;
 const REWARDS_PER_BLOCK = 41.5;
 const BLOCK_TIME = 4.3;
 
+// TODO: automatically update constants (with caching)
 export function estimateMinutesUntilRewardCollection(
   balance: number,
   targetRewards: number
