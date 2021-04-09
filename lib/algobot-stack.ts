@@ -69,9 +69,12 @@ export class AlgobotStack extends CDK.Stack {
       }
     );
 
+    // api.algotools.io -> api
+    const subdomainName = props.apiDomainName.split(".")[0];
+
     new Route53.ARecord(this, "ApiARecord", {
       zone,
-      recordName: "api.algotools.io",
+      recordName: subdomainName,
       target: Route53.RecordTarget.fromAlias(
         new Route53Targets.ApiGateway(api)
       ),
