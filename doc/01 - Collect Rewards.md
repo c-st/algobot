@@ -11,7 +11,8 @@ Using the configuration endpoints, settings for reward collection can be adjuste
 | -------------- | ------------: | ------------------------: | -------------: | ----------: |
 | ABCD123        |        2 ALGO |                     false |            3.0 |             |
 
-When the boolean value for `rewardCollectionEnabled` is toggled, an instance of a state machine is started (or stopped). If an execution runs into an error during execution, the value is set to `false`.
+Using DynamoDB streams, when the boolean value for `rewardCollectionEnabled` is toggled, an instance of a state machine is started (or stopped).
+If an execution runs into an error during execution, the value is set to `false`.
 In order to create a link between Target Address and running state machine its executionId is recorded.
 
 ### 1. Funding

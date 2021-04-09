@@ -533,6 +533,28 @@
     "@aws-cdk/cx-api" "1.97.0"
     constructs "^3.3.69"
 
+"@aws-cdk/aws-lambda-event-sources@1.97.0":
+  version "1.97.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-lambda-event-sources/-/aws-lambda-event-sources-1.97.0.tgz#a1961559d1620da816ca524dc9fa1e82ab8f7cc9"
+  integrity sha512-BPSyHrnVqvjDEY6ZXFK3BSF2HNVTXtE8J+tj3nbjBEsSP7LxWZGejCLAyVEEpcIpZ+Ant1z6Ue2IhhSUC/Px4A==
+  dependencies:
+    "@aws-cdk/aws-apigateway" "1.97.0"
+    "@aws-cdk/aws-dynamodb" "1.97.0"
+    "@aws-cdk/aws-ec2" "1.97.0"
+    "@aws-cdk/aws-events" "1.97.0"
+    "@aws-cdk/aws-iam" "1.97.0"
+    "@aws-cdk/aws-kinesis" "1.97.0"
+    "@aws-cdk/aws-lambda" "1.97.0"
+    "@aws-cdk/aws-msk" "1.97.0"
+    "@aws-cdk/aws-s3" "1.97.0"
+    "@aws-cdk/aws-s3-notifications" "1.97.0"
+    "@aws-cdk/aws-secretsmanager" "1.97.0"
+    "@aws-cdk/aws-sns" "1.97.0"
+    "@aws-cdk/aws-sns-subscriptions" "1.97.0"
+    "@aws-cdk/aws-sqs" "1.97.0"
+    "@aws-cdk/core" "1.97.0"
+    constructs "^3.3.69"
+
 "@aws-cdk/aws-lambda-nodejs@1.97.0":
   version "1.97.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-lambda-nodejs/-/aws-lambda-nodejs-1.97.0.tgz#1824c26ff08566bca18d7fbd235069fc5eb4e91d"
@@ -575,6 +597,14 @@
     "@aws-cdk/aws-iam" "1.97.0"
     "@aws-cdk/aws-kms" "1.97.0"
     "@aws-cdk/aws-s3-assets" "1.97.0"
+    "@aws-cdk/core" "1.97.0"
+    constructs "^3.3.69"
+
+"@aws-cdk/aws-msk@1.97.0":
+  version "1.97.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-msk/-/aws-msk-1.97.0.tgz#7deb2f466b3724ad5fb022baa8f072c88446f472"
+  integrity sha512-JSgR82QDlwJ1b4xVDXcNY/Ttv7oL4Nn8KlTLQC1HhpccOcSj54nUSiMiIhy0GLJkSYubBS8sOV2DUFla+B+12Q==
+  dependencies:
     "@aws-cdk/core" "1.97.0"
     constructs "^3.3.69"
 
@@ -622,6 +652,19 @@
     "@aws-cdk/aws-s3" "1.97.0"
     "@aws-cdk/core" "1.97.0"
     "@aws-cdk/cx-api" "1.97.0"
+    constructs "^3.3.69"
+
+"@aws-cdk/aws-s3-notifications@1.97.0":
+  version "1.97.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-s3-notifications/-/aws-s3-notifications-1.97.0.tgz#8a4d8e7514e909a6ed7cbd740341bec747e35be5"
+  integrity sha512-8/knzlKgfvfrXt752UP1MSOKdHD0YfW5RjyL6uGTjcTwAL5JaSugB+xngOru5on2LwVxd8prwFUUU7OYLv8tHA==
+  dependencies:
+    "@aws-cdk/aws-iam" "1.97.0"
+    "@aws-cdk/aws-lambda" "1.97.0"
+    "@aws-cdk/aws-s3" "1.97.0"
+    "@aws-cdk/aws-sns" "1.97.0"
+    "@aws-cdk/aws-sqs" "1.97.0"
+    "@aws-cdk/core" "1.97.0"
     constructs "^3.3.69"
 
 "@aws-cdk/aws-s3@1.97.0":

@@ -5,6 +5,8 @@ import * as Route53Targets from "@aws-cdk/aws-route53-targets";
 import * as ACM from "@aws-cdk/aws-certificatemanager";
 import * as Lambda from "@aws-cdk/aws-lambda";
 import * as DynamoDB from "@aws-cdk/aws-dynamodb";
+import * as SQS from "@aws-cdk/aws-sqs";
+import * as LambdaEventSources from "@aws-cdk/aws-lambda-event-sources";
 import * as ApiGateway from "@aws-cdk/aws-apigateway";
 import * as SecretsManager from "@aws-cdk/aws-secretsmanager";
 import * as LambdaNodeJs from "@aws-cdk/aws-lambda-nodejs";
@@ -54,7 +56,7 @@ export class AlgobotStack extends CDK.Stack {
     const api = new ApiGateway.RestApi(this, "RestApi", {
       restApiName: `${props.stackName}-Api`,
       domainName: {
-        domainName: props.apiDomainName, // "api.algotools.io",
+        domainName: props.apiDomainName,
         certificate,
         endpointType: EndpointType.EDGE,
         securityPolicy: SecurityPolicy.TLS_1_2,
@@ -70,7 +72,7 @@ export class AlgobotStack extends CDK.Stack {
       }
     );
 
-    // api.algotools.io -> api
+    // For example: "api.algotools.io" -> "api"
     const subdomainName = props.apiDomainName.split(".")[0];
 
     new Route53.ARecord(this, "ApiARecord", {
@@ -93,20 +95,54 @@ export class AlgobotStack extends CDK.Stack {
       billingMode: DynamoDB.BillingMode.PAY_PER_REQUEST,
       encryption: DynamoDB.TableEncryption.AWS_MANAGED,
       removalPolicy: CDK.RemovalPolicy.DESTROY,
+      stream: DynamoDB.StreamViewType.NEW_AND_OLD_IMAGES,
     });
+
+    const settingsChangedHandler = new LambdaNodeJs.NodejsFunction(
+      this,
+      "DynamoDbStreamsHandler",
+      {
+        entry: path.join(
+          __dirname,
+          "../src/usecases/reward-collection/handleSettingsChanged.ts"
+        ),
+        environment: {
+          ALGOADDRESSES_TABLENAME: algoAddressesTable.tableName,
+          REWARD_COLLECTION_STATEMACHINE_NAME: stateMachine.stateMachineName,
+        },
+        ...DEFAULT_LAMBDA_SETTINGS,
+      }
+    );
+
+    const deadLetterQueue = new SQS.Queue(this, "deadLetterQueue");
+
+    settingsChangedHandler.addEventSource(
+      new LambdaEventSources.DynamoEventSource(algoAddressesTable, {
+        startingPosition: Lambda.StartingPosition.LATEST,
+        batchSize: 5,
+        bisectBatchOnError: true,
+        onFailure: new LambdaEventSources.SqsDlq(deadLetterQueue),
+        retryAttempts: 1,
+      })
+    );
+
+    algoAddressesTable.grantReadWriteData(settingsChangedHandler);
+    stateMachine.grantStartExecution(settingsChangedHandler);
+    stateMachine.grantRead(settingsChangedHandler);
 
     const apiRequestHandler = new LambdaNodeJs.NodejsFunction(
       this,
       "ApiRequestHandler",
       {
-        entry: path.join(__dirname, "../src/usecases/reward-collection/apiRequestHandler.ts"),
+        entry: path.join(
+          __dirname,
+          "../src/usecases/reward-collection/handleApiRequests.ts"
+        ),
         environment: { ALGOADDRESSES_TABLENAME: algoAddressesTable.tableName },
         ...DEFAULT_LAMBDA_SETTINGS,
       }
     );
     algoAddressesTable.grantReadWriteData(apiRequestHandler);
-    stateMachine.grantStartExecution(apiRequestHandler);
-    stateMachine.grantRead(apiRequestHandler);
 
     const rewardCollectionEndpoint = api.root.addResource("reward-collection");
 
