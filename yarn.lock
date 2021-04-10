@@ -22,6 +22,19 @@
     "@aws-cdk/cx-api" "1.97.0"
     constructs "^3.3.69"
 
+"@aws-cdk/aws-amplify@1.97.0":
+  version "1.97.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-amplify/-/aws-amplify-1.97.0.tgz#0811e7ec72e0ed803fa7c4e1ad316ff2952a350c"
+  integrity sha512-MfyHekD5CgWVnzkAlVmsGP2GrhZ0NoQCyD/qeHVVHZ13UfIdreSNfaKj0xcqPg146Z1y9CRzOgvAY6zj4uunfA==
+  dependencies:
+    "@aws-cdk/aws-codebuild" "1.97.0"
+    "@aws-cdk/aws-codecommit" "1.97.0"
+    "@aws-cdk/aws-iam" "1.97.0"
+    "@aws-cdk/aws-kms" "1.97.0"
+    "@aws-cdk/aws-secretsmanager" "1.97.0"
+    "@aws-cdk/core" "1.97.0"
+    constructs "^3.3.69"
+
 "@aws-cdk/aws-apigateway@1.97.0":
   version "1.97.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-apigateway/-/aws-apigateway-1.97.0.tgz#71059c63c69365123a325d380edac498545ac9ce"

@@ -43,11 +43,6 @@ export class BuildStack extends CDK.Stack {
     });
 
     // Test stage
-    // ACM.DnsValidatedCertificate
-
-    // const acmCertificate = Fn.importValue(
-    //   props.acmCertificateArnOutput.importValue
-    // );
     const acmCertificateArn = props.acmCertificateArnOutput.importValue;
     const hostedZoneId = props.hostedZoneIdOutput.importValue;
     const hostedZoneName = props.hostedZoneNameOutput.importValue;
