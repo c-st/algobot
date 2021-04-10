@@ -36,7 +36,9 @@ export const handler = async (
   );
 
   return {
-    nextRewardCollection: getIsoDateInFuture(minutesUntilRewardCollection),
+    nextRewardCollection: getIsoDateInFuture(
+      minutesUntilRewardCollection + MINIMUM_WAIT_TIME_MINUTES
+    ),
     address,
     minimumRewardToCollect,
   };
