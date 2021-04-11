@@ -1,8 +1,8 @@
 <script lang="ts">
-  import HelloWorld from "./lib/HelloWorld.svelte";
+  import Algobot from "./lib/Algobot.svelte";
 </script>
 
-<HelloWorld />
+<Algobot />
 
 <style global lang="postcss">
   @tailwind base;

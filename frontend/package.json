@@ -8,6 +8,8 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "next",
+    "@tailwindcss/forms": "^0.3.2",
+    "@tailwindcss/typography": "^0.4.0",
     "autoprefixer": "^10.2.5",
     "postcss": "^8.2.9",
     "svelte": "^3.35.0",
