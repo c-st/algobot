@@ -138,11 +138,15 @@ export class AlgobotStack extends CDK.Stack {
           __dirname,
           "../src/usecases/reward-collection/handleApiRequests.ts"
         ),
-        environment: { ALGOADDRESSES_TABLENAME: algoAddressesTable.tableName },
+        environment: {
+          ALGOADDRESSES_TABLENAME: algoAddressesTable.tableName,
+          SECRET_ARN: this.secret.secretArn,
+        },
         ...DEFAULT_LAMBDA_SETTINGS,
       }
     );
     algoAddressesTable.grantReadWriteData(apiRequestHandler);
+    this.secret.grantRead(apiRequestHandler);
 
     const rewardCollectionEndpoint = api.root.addResource("reward-collection");
 

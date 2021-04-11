@@ -10,9 +10,12 @@ export const handler = async (
     event
   );
 
-  const { algorandClient } = await buildDependencies(process.env.SECRET_ARN!);
-  const remainingFeeBalance = 0.98; // TODO: fetch for address
+  const { algorandClient } = await buildDependencies();
+  const remainingFeeBalance = 1.0; // TODO: fetch for address
   const accountState = await algorandClient.getAccountState(address);
+  if (!accountState) {
+    throw Error(`Account state for address ${address} could not be fetched`);
+  }
 
   // Pending rewards have been claimed in the meanwhile
   if (accountState.pendingRewards < minimumRewardToCollect) {

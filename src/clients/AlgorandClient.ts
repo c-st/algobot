@@ -32,25 +32,27 @@ export class AlgorandClient {
     this.algodClient = new AlgoSdk.Algodv2(token as any, serverUrl, "" as any);
   }
 
-  async getAccountState(address: string): Promise<AccountState> {
-    const state = await this.algodClient.accountInformation(address).do();
-    const {
-      amount,
-      "amount-without-pending-rewards": amountWithoutPendingRewards,
-      "pending-rewards": pendingRewards,
-    } = state;
+  async getAccountState(address: string): Promise<AccountState | undefined> {
+    try {
+      const state = await this.algodClient.accountInformation(address).do();
+      const {
+        amount,
+        "amount-without-pending-rewards": amountWithoutPendingRewards,
+        "pending-rewards": pendingRewards,
+      } = state;
 
-    const params = await this.algodClient.getTransactionParams().do();
-    console.log(params);
-
-    return {
-      address,
-      amount: AlgoSdk.microalgosToAlgos(amount),
-      amountWithoutPendingRewards: AlgoSdk.microalgosToAlgos(
-        amountWithoutPendingRewards
-      ),
-      pendingRewards: AlgoSdk.microalgosToAlgos(pendingRewards),
-    };
+      return {
+        address,
+        amount: AlgoSdk.microalgosToAlgos(amount),
+        amountWithoutPendingRewards: AlgoSdk.microalgosToAlgos(
+          amountWithoutPendingRewards
+        ),
+        pendingRewards: AlgoSdk.microalgosToAlgos(pendingRewards),
+      };
+    } catch (error) {
+      console.error("Error retrieving account state", { error });
+      return undefined;
+    }
   }
 
   async sendTransaction(
@@ -79,6 +81,4 @@ export class AlgorandClient {
 
     return result.txId;
   }
-
-  // sending a tx: https://github.com/PureStake/api-examples/blob/master/javascript-examples/v2/algod_submit_tx.js
 }

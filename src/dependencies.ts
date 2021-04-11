@@ -14,7 +14,7 @@ const secretsManager = new SecretsManager();
 let secretResponse: GetSecretValueResponse;
 
 const buildDependencies = async (
-  secretArn: string
+  secretArn: string = process.env.SECRET_ARN!
 ): Promise<{ algorandClient: AlgorandClient }> => {
   if (!secretArn) {
     throw Error("Environment variable secretArn is not set");

@@ -29,7 +29,8 @@ export type CollectRewardResult = RewardCollectionParameters & {
 export type RewardCollectionSettings = {
   isEnabled: boolean;
   address: AlgoAddress;
-  minimumRewardsToCollect: number;
+  minimumRewardsToCollect?: number;
+  pendingRewards: number;
 };
 
 export type UpdateRewardCollectionSettingsCommand = {

@@ -27,7 +27,7 @@ describe("collectRewards", () => {
     });
 
     expect(await handler(parameters)).toStrictEqual({
-      remainingFeeBalance: 0.98,
+      remainingFeeBalance: 1.0,
       address: "1234ABC",
       minimumRewardToCollect: 2,
     });
@@ -53,7 +53,7 @@ describe("collectRewards", () => {
     expect(result).toStrictEqual({
       collectedReward: 5,
       transactionId: "TXID",
-      remainingFeeBalance: 0.98,
+      remainingFeeBalance: 1.0,
       address: "1234ABC",
       minimumRewardToCollect: 2,
     });

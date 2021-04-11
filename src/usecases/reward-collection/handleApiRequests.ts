@@ -3,6 +3,7 @@ import {
   getAddressSettings,
   upsertAddressSettings,
 } from "../../clients/dynamodb/algoAddressStore";
+import buildDependencies from "../../dependencies";
 import { UpdateRewardCollectionSettingsCommand } from "./types";
 
 export const handler = async (
@@ -15,13 +16,29 @@ export const handler = async (
     });
   }
 
+  const { algorandClient } = await buildDependencies();
+
   switch (event.httpMethod) {
     case "GET": {
-      const addressSettings = await getAddressSettings(address);
-      if (!addressSettings) {
-        return lambdaResult(404, {});
+      const [addressSettings, accountState] = await Promise.all([
+        getAddressSettings(address),
+        algorandClient.getAccountState(address), // todo: handle error (invalid address)
+      ]);
+      if (!accountState) {
+        return lambdaResult(400, {
+          errorMessage: "Invalid ALGO address provided",
+        });
+      } else if (!addressSettings) {
+        return lambdaResult(200, {
+          address,
+          rewardCollectionEnabled: false,
+          pendingRewards: accountState.pendingRewards,
+        });
       }
-      return lambdaResult(200, addressSettings);
+      return lambdaResult(200, {
+        ...addressSettings,
+        pendingRewards: accountState.pendingRewards,
+      });
     }
 
     case "PUT": {
