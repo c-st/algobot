@@ -8,7 +8,7 @@ GET {{baseUrl}}/reward-collection?address={{address}} HTTP/1.1
 content-type: application/json
 
 ### Update settings
-PUT {{baseUrl}}/reward-collection?address={{address}} HTTP/1.1
+PUT {{baseUrl}}/reward-collection HTTP/1.1
 content-type: application/json
 
 {
