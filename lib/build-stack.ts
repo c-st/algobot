@@ -4,11 +4,18 @@ import * as CodePipelineActions from "@aws-cdk/aws-codepipeline-actions";
 import * as Pipelines from "@aws-cdk/pipelines";
 import { AlgobotStage } from "./algobot-stage";
 
+interface StageProps {
+  apiDomainName: string;
+  secretArn: string;
+}
+
 interface BuildStackProps extends CDK.StackProps {
   acmCertificateArnOutput: CDK.CfnOutput;
   hostedZoneIdOutput: CDK.CfnOutput;
   hostedZoneNameOutput: CDK.CfnOutput;
-  // add all custom properties here
+  // Stage-specific props:
+  testProps: StageProps;
+  productionProps: StageProps;
 }
 
 export class BuildStack extends CDK.Stack {
@@ -51,28 +58,18 @@ export class BuildStack extends CDK.Stack {
       acmCertificateArn,
       hostedZoneId,
       hostedZoneName,
-      apiDomainName: "api-test.algotools.io",
-      secretArn:
-        "arn:aws:secretsmanager:eu-central-1:075374763076:secret:AlgobotTest-Secrets-JNOnOP",
+      apiDomainName: props.testProps.apiDomainName,
+      secretArn: props.testProps.secretArn,
     });
     pipeline.addApplicationStage(testApp);
-    // const appApiUrl = pipeline.stackOutput(testApp.urlOutput);
-
-    // testStage.addActions(
-    //   new ManualApprovalAction({
-    //     actionName: "ManualApproval",
-    //     runOrder: testStage.nextSequentialRunOrder(),
-    //   })
-    // );
 
     // Production stage
     const prodApp = new AlgobotStage(this, "Prod", {
       acmCertificateArn,
       hostedZoneId,
       hostedZoneName,
-      apiDomainName: "api.algotools.io",
-      secretArn:
-        "arn:aws:secretsmanager:eu-central-1:075374763076:secret:AlgobotProd-Secrets-7s0zt7",
+      apiDomainName: props.productionProps.apiDomainName,
+      secretArn: props.productionProps.secretArn,
     });
     pipeline.addApplicationStage(prodApp);
   }

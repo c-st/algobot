@@ -8,11 +8,24 @@ import { AlgotoolsWebappStack } from "../lib/algotools-webapp-stack";
 const app = new cdk.App();
 
 const domainStack = new AlgotoolsDomainStack(app);
-const webAppStack = new AlgotoolsWebappStack(app);
+
 const buildStack = new BuildStack(app, {
   hostedZoneIdOutput: domainStack.hostedZoneIdOutput,
   hostedZoneNameOutput: domainStack.hostedZoneNameOutput,
   acmCertificateArnOutput: domainStack.acmCertificateArnOutput,
+  testProps: {
+    apiDomainName: "api-test.algotools.io",
+    secretArn:
+      "arn:aws:secretsmanager:eu-central-1:075374763076:secret:AlgobotTest-Secrets-JNOnOP",
+  },
+  productionProps: {
+    apiDomainName: "api.algotools.io",
+    secretArn:
+      "arn:aws:secretsmanager:eu-central-1:075374763076:secret:AlgobotProd-Secrets-7s0zt7",
+  },
 });
+
+const webAppStack = new AlgotoolsWebappStack(app, {});
+
 webAppStack.addDependency(domainStack);
 buildStack.addDependency(domainStack);

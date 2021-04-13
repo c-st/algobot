@@ -1,10 +1,13 @@
 import * as CDK from "@aws-cdk/core";
 import * as Amplify from "@aws-cdk/aws-amplify";
+import { RedirectStatus } from "@aws-cdk/aws-amplify";
+
+interface AlgotoolsWebappStackProps extends CDK.StackProps {}
 
 export class AlgotoolsWebappStack extends CDK.Stack {
   static STACK_NAME = "AlgotoolsWebappStack";
 
-  constructor(scope: CDK.Construct, props?: CDK.StackProps) {
+  constructor(scope: CDK.Construct, props: AlgotoolsWebappStackProps) {
     super(scope, AlgotoolsWebappStack.STACK_NAME, props);
 
     // Amplify App
@@ -15,6 +18,11 @@ export class AlgotoolsWebappStack extends CDK.Stack {
         oauthToken: CDK.SecretValue.secretsManager("github_token"),
       }),
       customRules: [
+        {
+          source: "/api/<*>",
+          target: "https://api.algotools.io/<*>", // target: `${api.url}/<*>`,
+          status: RedirectStatus.REWRITE,
+        },
         {
           source:
             "</^((?!.(css|gif|ico|jpg|js|json|png|txt|svg|woff|ttf|map)$).)*$/>",
