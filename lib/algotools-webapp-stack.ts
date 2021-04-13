@@ -20,7 +20,7 @@ export class AlgotoolsWebappStack extends CDK.Stack {
       customRules: [
         {
           source: "/api/<*>",
-          target: "https://api.algotools.io/<*>", // target: `${api.url}/<*>`,
+          target: "https://api.algotools.io/<*>",
           status: RedirectStatus.REWRITE,
         },
         {
