@@ -1,14 +1,23 @@
 <script lang="ts">
-  import AddressDetails from "./AddressDetails.svelte";
   import AddressInput from "./AddressInput.svelte";
   import Toggle from "./ui/Toggle.svelte";
   import AmountInput from "./AmountInput.svelte";
   import Row from "./Row.svelte";
-  /**
-   * - on input blur send request and fetch address info
-   * - show address info
-   * - validate algo address (show s†atus)
-   */
+  import { address, addressValid } from "../stores";
+
+  async function addressEntered() {
+    if ($addressValid) {
+      /**
+       * - on input blur send request and fetch address info
+       * - show address info
+       * - validate algo address (show s†atus)
+       */
+      const rewardCollectionSettings = await fetch(
+        `https://api.algotools.io/reward-collection?address=${$address}`
+      );
+      console.log(rewardCollectionSettings);
+    }
+  }
 </script>
 
 <div
@@ -24,7 +33,7 @@
     <dl class="sm:divide-y sm:divide-gray-200">
       <Row>
         <span slot="title">Algo address</span>
-        <AddressInput slot="content" />
+        <AddressInput slot="content" on:change={addressEntered} />
       </Row>
 
       <Row>
