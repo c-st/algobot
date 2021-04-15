@@ -10,17 +10,19 @@
     rewardCollectionSettings,
   } from "../stores";
   import Button from "./ui/Button.svelte";
+  import {
+    getRewardCollectionSettings,
+    updateRewardCollectionSettings,
+  } from "../apiClient";
+  import CircularButton from "./ui/CircularButton.svelte";
 
   async function addressEntered() {
     if ($addressValid) {
-      // show spinner
-      const response = await fetch(
-        `/api/reward-collection?address=${$address}`
-      ).then((response) => response.json());
-      rewardCollectionSettings.set(response);
-      console.log(response);
-      if (response.minimumRewardsToCollect) {
-        minimumClaimAmount.set(response.minimumRewardsToCollect);
+      const currentSettings = await getRewardCollectionSettings($address);
+      rewardCollectionSettings.set(currentSettings);
+
+      if (currentSettings.minimumRewardsToCollect) {
+        minimumClaimAmount.set(currentSettings.minimumRewardsToCollect);
       }
     } else {
       rewardCollectionSettings.set(undefined);
@@ -28,55 +30,35 @@
   }
 
   async function toggleCollection() {
-    const requestBody = {
-      address: $address,
+    const updatedSettings = await updateRewardCollectionSettings({
+      ...$rewardCollectionSettings,
       enable: !$rewardCollectionSettings.rewardCollectionEnabled,
       minimumRewardsToCollect: $minimumClaimAmount,
-    };
-
-    await fetch("/api/reward-collection", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    }).then((response) => response.json());
-
-    // update with response
-
-    rewardCollectionSettings.set({
-      ...$rewardCollectionSettings,
-      minimumRewardsToCollect: requestBody.minimumRewardsToCollect,
-      rewardCollectionEnabled: requestBody.enable,
     });
+    console.log(updatedSettings);
+    rewardCollectionSettings.set(updatedSettings);
   }
 
   async function updateAmount() {
-    const requestBody = {
+    const updatedSettings = await updateRewardCollectionSettings({
       address: $address,
       enable: true,
       minimumRewardsToCollect: $minimumClaimAmount,
-    };
-
-    await fetch("/api/reward-collection", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    }).then((response) => response.json());
-
-    rewardCollectionSettings.set({
-      ...$rewardCollectionSettings,
-      minimumRewardsToCollect: requestBody.minimumRewardsToCollect,
     });
+    rewardCollectionSettings.set(updatedSettings);
   }
 </script>
 
 <div
   class="bg-gray-50 overflow-hidden shadow rounded-lg divide-y divide-gray-200"
 >
-  <div class="px-4 py-5 sm:px-6">
+  <div class="px-4 py-5 sm:px-6 flex">
     <span class="text-xl font-medium text-gray-700 mr-1">
       &#x1F916; Algobot
     </span>
     <span class="text-lg text-gray-500">Algorand Reward Collector</span>
+    <div class="flex flex-grow" />
+    <span class=""><CircularButton /></span>
   </div>
   <div class="px-4 py-5 sm:p-6">
     <dl class="sm:divide-y sm:divide-gray-200">
@@ -116,8 +98,7 @@
           <span slot="content"
             ><Toggle
               on:click={toggleCollection}
-              enabled={$rewardCollectionSettings.rewardCollectionEnabled ??
-                false}
+              enabled={$rewardCollectionSettings.rewardCollectionEnabled}
             /></span
           >
         </Row>
