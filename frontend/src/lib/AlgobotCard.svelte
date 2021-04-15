@@ -3,19 +3,25 @@
   import Toggle from "./ui/Toggle.svelte";
   import AmountInput from "./AmountInput.svelte";
   import Row from "./Row.svelte";
-  import { address, addressValid } from "../stores";
+  import {
+    address,
+    addressValid,
+    minimumClaimAmount,
+    rewardCollectionSettings,
+  } from "../stores";
 
   async function addressEntered() {
     if ($addressValid) {
-      /**
-       * - on input blur send request and fetch address info
-       * - show address info
-       * - validate algo address (show s†atus)
-       */
-      const rewardCollectionSettings = await fetch(
-        `https://api.algotools.io/reward-collection?address=${$address}`
-      );
-      console.log(rewardCollectionSettings);
+      const response = await fetch(
+        `/api/reward-collection?address=${$address}`
+      ).then((response) => response.json());
+      console.log(response);
+      rewardCollectionSettings.set(response);
+      if (response.minimumRewardsToCollect) {
+        minimumClaimAmount.set(response.minimumRewardsToCollect);
+      }
+    } else {
+      rewardCollectionSettings.set(undefined);
     }
   }
 </script>
@@ -38,17 +44,21 @@
 
       <Row>
         <span slot="title">Pending rewards</span>
-        <span slot="content"><span class="font-mono">1,234</span> ALGO</span>>
+        <span slot="content"
+          ><span class="font-mono"
+            >{$rewardCollectionSettings?.pendingRewards}</span
+          > ALGO</span
+        >>
       </Row>
 
       <Row>
         <span slot="title" class="pt-2">Minimum amount to claim</span>
-        <AmountInput slot="content" />
+        <span slot="content"><AmountInput /></span>
       </Row>
 
       <Row>
         <span slot="title" class="pt-2">Enable bot</span>
-        <Toggle slot="content" />
+        <span slot="content"><Toggle /></span>
       </Row>
 
       <Row>
