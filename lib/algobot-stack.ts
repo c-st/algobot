@@ -16,7 +16,7 @@ import { EndpointType, SecurityPolicy } from "@aws-cdk/aws-apigateway";
 
 export const DEFAULT_LAMBDA_SETTINGS: Partial<NodejsFunctionProps> = {
   timeout: CDK.Duration.seconds(2),
-  memorySize: 512,
+  memorySize: 768,
   tracing: Lambda.Tracing.ACTIVE,
   runtime: Lambda.Runtime.NODEJS_14_X,
 };
