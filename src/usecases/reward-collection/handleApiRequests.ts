@@ -9,17 +9,16 @@ import { UpdateRewardCollectionSettingsCommand } from "./types";
 export const handler = async (
   event: Lambda.APIGatewayProxyEvent
 ): Promise<Lambda.APIGatewayProxyResult> => {
-  const { address } = event.queryStringParameters || {};
-  if (!address) {
-    return lambdaResult(400, {
-      errorMessage: "Missing query parameter in request: address",
-    });
-  }
-
   const { algorandClient } = await buildDependencies();
 
   switch (event.httpMethod) {
     case "GET": {
+      const { address } = event.queryStringParameters || {};
+      if (!address) {
+        return lambdaResult(400, {
+          errorMessage: "Missing query parameter in request: address",
+        });
+      }
       const [addressSettings, accountState] = await Promise.all([
         getAddressSettings(address),
         algorandClient.getAccountState(address), // todo: handle error (invalid address)
