@@ -64,9 +64,9 @@ export const handler = async (
         }),
         algorandClient.getAccountState(address),
       ]);
-      const result: RewardCollectionSettings = {
+      const result = {
         address,
-        isEnabled: enable,
+        rewardCollectionEnabled: enable,
         minimumRewardsToCollect,
         pendingRewards: accountState?.pendingRewards ?? -1,
       };
