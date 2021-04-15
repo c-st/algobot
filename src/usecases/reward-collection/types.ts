@@ -8,7 +8,6 @@ export interface AlgoAddressSettings {
 }
 
 // State Machine
-
 export type RewardCollectionParameters = {
   address: AlgoAddress;
   minimumRewardToCollect: number;
@@ -25,7 +24,6 @@ export type CollectRewardResult = RewardCollectionParameters & {
 };
 
 // API
-
 export type RewardCollectionSettings = {
   isEnabled: boolean;
   address: AlgoAddress;

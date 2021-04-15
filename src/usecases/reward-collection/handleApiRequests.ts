@@ -4,7 +4,10 @@ import {
   upsertAddressSettings,
 } from "../../clients/dynamodb/algoAddressStore";
 import buildDependencies from "../../dependencies";
-import { UpdateRewardCollectionSettingsCommand } from "./types";
+import {
+  RewardCollectionSettings,
+  UpdateRewardCollectionSettingsCommand,
+} from "./types";
 
 export const handler = async (
   event: Lambda.APIGatewayProxyEvent
@@ -41,7 +44,6 @@ export const handler = async (
     }
 
     case "PUT": {
-      // TODO: define and use JSONSchema for request
       if (!event.body) {
         return lambdaResult(400, {
           errorMessage: "Missing request body",
@@ -53,14 +55,19 @@ export const handler = async (
         return lambdaResult(400, {
           errorMessage: "Missing request body parameters",
         });
-      } else {
-        await handleUpdateRewardCollectionSettingsCommand({
-          enable,
-          address,
-          minimumRewardsToCollect,
-        });
-        return lambdaResult(200, {});
       }
+      await handleUpdateRewardCollectionSettingsCommand({
+        enable,
+        address,
+        minimumRewardsToCollect,
+      });
+      const result: RewardCollectionSettings = {
+        address,
+        isEnabled: enable,
+        minimumRewardsToCollect,
+        pendingRewards: 0, // TODO
+      };
+      return lambdaResult(200, result);
     }
   }
 
