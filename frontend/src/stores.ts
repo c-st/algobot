@@ -1,7 +1,7 @@
 import { derived, writable } from "svelte/store";
 
 type RewardCollectionSettings = {
-  isEnabled: boolean;
+  rewardCollectionEnabled: boolean;
   address: string;
   minimumRewardsToCollect?: number;
   pendingRewards: number;
