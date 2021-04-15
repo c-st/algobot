@@ -5,7 +5,7 @@ import { BuildStack } from "../lib/build-stack";
 import { AlgotoolsDomainStack } from "../lib/algotools-domain-stack";
 import { AlgotoolsWebappStack } from "../lib/algotools-webapp-stack";
 
-const app = new cdk.App();
+const app = new cdk.App(); // add props here
 
 const domainStack = new AlgotoolsDomainStack(app);
 

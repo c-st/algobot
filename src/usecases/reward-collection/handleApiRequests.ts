@@ -56,16 +56,19 @@ export const handler = async (
           errorMessage: "Missing request body parameters",
         });
       }
-      await handleUpdateRewardCollectionSettingsCommand({
-        enable,
-        address,
-        minimumRewardsToCollect,
-      });
+      const [_, accountState] = await Promise.all([
+        await handleUpdateRewardCollectionSettingsCommand({
+          enable,
+          address,
+          minimumRewardsToCollect,
+        }),
+        algorandClient.getAccountState(address),
+      ]);
       const result: RewardCollectionSettings = {
         address,
         isEnabled: enable,
         minimumRewardsToCollect,
-        pendingRewards: 0, // TODO
+        pendingRewards: accountState?.pendingRewards ?? -1,
       };
       return lambdaResult(200, result);
     }
