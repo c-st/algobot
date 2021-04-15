@@ -9,11 +9,11 @@
     minimumClaimAmount,
     rewardCollectionSettings,
   } from "../stores";
+  import Button from "./ui/Button.svelte";
 
   async function addressEntered() {
     if ($addressValid) {
-      console.log("fetching address info");
-      // todo: enable + disable spinner
+      // show spinner
       const response = await fetch(
         `/api/reward-collection?address=${$address}`
       ).then((response) => response.json());
@@ -33,18 +33,38 @@
       enable: !$rewardCollectionSettings.rewardCollectionEnabled,
       minimumRewardsToCollect: $minimumClaimAmount,
     };
-    console.log(requestBody);
 
-    const response = await fetch("/api/reward-collection", {
+    await fetch("/api/reward-collection", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),
     }).then((response) => response.json());
 
-    console.log(response);
+    // update with response
+
     rewardCollectionSettings.set({
       ...$rewardCollectionSettings,
+      minimumRewardsToCollect: requestBody.minimumRewardsToCollect,
       rewardCollectionEnabled: requestBody.enable,
+    });
+  }
+
+  async function updateAmount() {
+    const requestBody = {
+      address: $address,
+      enable: true,
+      minimumRewardsToCollect: $minimumClaimAmount,
+    };
+
+    await fetch("/api/reward-collection", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
+    }).then((response) => response.json());
+
+    rewardCollectionSettings.set({
+      ...$rewardCollectionSettings,
+      minimumRewardsToCollect: requestBody.minimumRewardsToCollect,
     });
   }
 </script>
@@ -70,17 +90,23 @@
       {#if $rewardCollectionSettings}
         <Row>
           <span slot="title" class="pt-2">Minimum amount to claim</span>
-          <span slot="content"
-            ><AmountInput bind:value={$minimumClaimAmount} /></span
-          >
-          <!-- if enabled, on change show button to update settings-->
+          <span slot="content" class="flex space-x-4"
+            ><AmountInput bind:value={$minimumClaimAmount} />
+            {#if $rewardCollectionSettings.rewardCollectionEnabled && $minimumClaimAmount !== $rewardCollectionSettings.minimumRewardsToCollect}
+              <Button>
+                <span slot="content" on:click={updateAmount}
+                  >Update settings</span
+                >
+              </Button>
+            {/if}
+          </span>
         </Row>
 
         <Row>
           <span slot="title">Pending rewards</span>
           <span slot="content"
             ><span class="font-mono"
-              >{$rewardCollectionSettings?.pendingRewards}</span
+              >{$rewardCollectionSettings.pendingRewards}</span
             > ALGO</span
           >>
         </Row>
@@ -90,7 +116,7 @@
           <span slot="content"
             ><Toggle
               on:click={toggleCollection}
-              enabled={$rewardCollectionSettings?.rewardCollectionEnabled ??
+              enabled={$rewardCollectionSettings.rewardCollectionEnabled ??
                 false}
             /></span
           >
@@ -109,6 +135,3 @@
     </dl>
   </div>
 </div>
-
-<style>
-</style>
