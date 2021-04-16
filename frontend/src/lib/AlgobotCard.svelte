@@ -58,7 +58,9 @@
     </span>
     <span class="text-lg text-gray-500">Algorand Reward Collector</span>
     <div class="flex flex-grow" />
-    <span class=""><CircularButton /></span>
+    {#if $addressValid}<span class=""
+        ><CircularButton on:click={addressEntered} /></span
+      >{/if}
   </div>
   <div class="px-4 py-5 sm:p-6">
     <dl class="sm:divide-y sm:divide-gray-200">

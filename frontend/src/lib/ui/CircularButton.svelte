@@ -1,4 +1,5 @@
 <button
+  on:click
   type="button"
   class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-gray-500 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 >
