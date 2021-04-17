@@ -130,8 +130,10 @@ export class AlgobotStack extends CDK.Stack {
 
     this.secret.grantRead(settingsChangedHandler);
     this.algoAddressesTable.grantReadWriteData(settingsChangedHandler);
-    stateMachine.grantStartExecution(settingsChangedHandler);
+
     stateMachine.grantRead(settingsChangedHandler);
+    stateMachine.grantStartExecution(settingsChangedHandler);
+    stateMachine.grantExecution(settingsChangedHandler, "states:StopExecution");
 
     const apiRequestHandler = new LambdaNodeJs.NodejsFunction(
       this,
