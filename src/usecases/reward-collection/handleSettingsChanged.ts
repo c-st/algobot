@@ -1,7 +1,6 @@
 import * as Lambda from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
 import { AttributeMap } from "aws-sdk/clients/dynamodb";
-import { AlgoAddressStore } from "../../clients/dynamodb/algoAddressStore";
 import buildDependencies from "../../dependencies";
 import { AlgoAddressSettings } from "./types";
 

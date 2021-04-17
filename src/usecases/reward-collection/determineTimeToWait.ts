@@ -8,53 +8,45 @@ const MINIMUM_WAIT_TIME_MINUTES = 5;
 export const handler = async (
   event: RewardCollectionParameters
 ): Promise<DetermineTimeToWaitResult> => {
-  const { address, minimumRewardToCollect } = event;
+  const { address, minimumRewardsToCollect } = event;
   console.log(
-    `Estimating reward collection time for ${address} (at least ${minimumRewardToCollect} ALGO)`,
+    `Estimating reward collection time for ${address} (at least ${minimumRewardsToCollect} ALGO)`,
     event
   );
-  const { algorandClient } = await buildDependencies();
+  if (!address || !minimumRewardsToCollect) {
+    throw Error("Missing parameters in event");
+  }
 
+  const { algorandClient } = await buildDependencies();
   const accountState = await algorandClient.getAccountState(address);
   if (!accountState) {
     throw Error(`Account state for address ${address} could not be fetched`);
   }
 
   // Already ready to claim?
-  if (accountState.pendingRewards >= minimumRewardToCollect) {
+  if (accountState.pendingRewards >= minimumRewardsToCollect) {
     return {
       nextRewardCollection: getIsoDateInFuture(MINIMUM_WAIT_TIME_MINUTES),
       address,
-      minimumRewardToCollect,
+      minimumRewardsToCollect,
     };
   }
 
   // Calculate remaining time based on current balance:
   const additionalAlgoNeeded =
-    minimumRewardToCollect - accountState.pendingRewards;
-
-  console.log("", {
-    accountState,
-    minimumRewardToCollect,
-    additionalAlgoNeeded,
-  });
+    minimumRewardsToCollect - accountState.pendingRewards;
 
   const minutesUntilRewardCollection = estimateMinutesUntilRewardCollection(
     accountState.amountWithoutPendingRewards,
     additionalAlgoNeeded
   );
 
-  console.log("determineTime", {
-    minutesUntilRewardCollection,
-    MINIMUM_WAIT_TIME_MINUTES,
-  });
-
   return {
     nextRewardCollection: getIsoDateInFuture(
       minutesUntilRewardCollection + MINIMUM_WAIT_TIME_MINUTES
     ),
     address,
-    minimumRewardToCollect,
+    minimumRewardsToCollect,
   };
 };
 

@@ -15,7 +15,7 @@ describe("determineTimeToWait", () => {
   it("returns immediately if rewards are already collectable", async () => {
     const parameters = {
       address: "1234ABC",
-      minimumRewardToCollect: 2,
+      minimumRewardsToCollect: 2,
     };
 
     mockAlgorandClient.getAccountState.mockResolvedValue({
@@ -30,14 +30,14 @@ describe("determineTimeToWait", () => {
     expect(response).toStrictEqual({
       nextRewardCollection: expect.anything(),
       address: "1234ABC",
-      minimumRewardToCollect: 2,
+      minimumRewardsToCollect: 2,
     });
   });
 
   it("returns time calculated based on reward distribution", async () => {
     const parameters = {
       address: "1234ABC",
-      minimumRewardToCollect: 1,
+      minimumRewardsToCollect: 1,
     };
 
     mockAlgorandClient.getAccountState.mockResolvedValue({
@@ -52,7 +52,29 @@ describe("determineTimeToWait", () => {
     expect(response).toStrictEqual({
       nextRewardCollection: expect.anything(),
       address: "1234ABC",
-      minimumRewardToCollect: 1,
+      minimumRewardsToCollect: 1,
+    });
+  });
+
+  it("returns time calculated based on reward distribution 2", async () => {
+    const parameters = {
+      address: "1234ABC",
+      minimumRewardsToCollect: 5,
+    };
+
+    mockAlgorandClient.getAccountState.mockResolvedValue({
+      address: "1234ABC",
+      amount: 420,
+      amountWithoutPendingRewards: 420,
+      pendingRewards: 0,
+    });
+
+    const response = await handler(parameters);
+    response; //?
+    expect(response).toStrictEqual({
+      nextRewardCollection: expect.anything(),
+      address: "1234ABC",
+      minimumRewardsToCollect: 5,
     });
   });
 });

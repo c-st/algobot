@@ -4,9 +4,9 @@ import { CollectRewardResult, RewardCollectionParameters } from "./types";
 export const handler = async (
   event: RewardCollectionParameters
 ): Promise<CollectRewardResult> => {
-  const { address, minimumRewardToCollect } = event;
+  const { address, minimumRewardsToCollect } = event;
   console.log(
-    `Claiming rewards for ${address} (minimum ${minimumRewardToCollect})`,
+    `Claiming rewards for ${address} (minimum ${minimumRewardsToCollect})`,
     event
   );
 
@@ -18,7 +18,7 @@ export const handler = async (
   }
 
   // Pending rewards have been claimed in the meanwhile
-  if (accountState.pendingRewards < minimumRewardToCollect) {
+  if (accountState.pendingRewards < minimumRewardsToCollect) {
     console.info("Account is not yet ready to claim rewards", {
       accountState,
       event,
@@ -27,7 +27,7 @@ export const handler = async (
     return {
       remainingFeeBalance,
       address,
-      minimumRewardToCollect,
+      minimumRewardsToCollect,
     };
   }
 
@@ -40,6 +40,6 @@ export const handler = async (
     transactionId: txId,
     remainingFeeBalance,
     address,
-    minimumRewardToCollect,
+    minimumRewardsToCollect,
   };
 };

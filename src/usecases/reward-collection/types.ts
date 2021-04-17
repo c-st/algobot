@@ -10,7 +10,7 @@ export interface AlgoAddressSettings {
 // State Machine
 export type RewardCollectionParameters = {
   address: AlgoAddress;
-  minimumRewardToCollect: number;
+  minimumRewardsToCollect: number;
 };
 
 export type DetermineTimeToWaitResult = RewardCollectionParameters & {

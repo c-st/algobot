@@ -16,7 +16,7 @@ describe("collectRewards", () => {
   it("does not claim if minimum reward has not been reached", async () => {
     const parameters = {
       address: "1234ABC",
-      minimumRewardToCollect: 2,
+      minimumRewardsToCollect: 2,
     };
 
     mockAlgorandClient.getAccountState.mockResolvedValue({
@@ -29,14 +29,14 @@ describe("collectRewards", () => {
     expect(await handler(parameters)).toStrictEqual({
       remainingFeeBalance: 1.0,
       address: "1234ABC",
-      minimumRewardToCollect: 2,
+      minimumRewardsToCollect: 2,
     });
   });
 
   it("claims rewards if minimal amount to claim is reached", async () => {
     const parameters = {
       address: "1234ABC",
-      minimumRewardToCollect: 2,
+      minimumRewardsToCollect: 2,
     };
 
     mockAlgorandClient.getAccountState.mockResolvedValue({
@@ -55,7 +55,7 @@ describe("collectRewards", () => {
       transactionId: "TXID",
       remainingFeeBalance: 1.0,
       address: "1234ABC",
-      minimumRewardToCollect: 2,
+      minimumRewardsToCollect: 2,
     });
   });
 });
