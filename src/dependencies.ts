@@ -1,21 +1,34 @@
 import { AlgorandClient } from "./clients/AlgorandClient";
+import {
+  AwsStepFunctionsClient,
+  StepFunctionsClient,
+} from "./clients/stepFunctionsClient";
 import { SecretsManager } from "aws-sdk";
 import { Secret } from "./types";
 import { GetSecretValueResponse } from "aws-sdk/clients/secretsmanager";
 import AWSXRay from "aws-xray-sdk-core";
-// const AWSXRay = require("aws-xray-sdk-core");
+import {
+  AddressStore,
+  AlgoAddressStore,
+} from "./clients/dynamodb/algoAddressStore";
 
 const AWS = AWSXRay.captureAWS(require("aws-sdk"));
-export const DynamoDbClient = new AWS.DynamoDB() as AWS.DynamoDB;
-export const DocumentClient = new AWS.DynamoDB.DocumentClient() as AWS.DynamoDB.DocumentClient;
+const documentClient = new AWS.DynamoDB.DocumentClient() as AWS.DynamoDB.DocumentClient;
+const stepFunctionsClient = new AWS.StepFunctions() as AWS.StepFunctions;
 
 // Dependencies which require secret values:
 const secretsManager = new SecretsManager();
 let secretResponse: GetSecretValueResponse;
 
+type Dependencies = {
+  addressStore: AlgoAddressStore;
+  algorandClient: AlgorandClient;
+  stepFunctionsClient: StepFunctionsClient;
+};
+
 const buildDependencies = async (
   secretArn: string = process.env.SECRET_ARN!
-): Promise<{ algorandClient: AlgorandClient }> => {
+): Promise<Dependencies> => {
   if (!secretArn) {
     throw Error("Environment variable secretArn is not set");
   }
@@ -38,7 +51,13 @@ const buildDependencies = async (
     algodApiServer
   );
 
-  return { algorandClient };
+  const addressStore = new AddressStore(documentClient);
+
+  return {
+    addressStore,
+    algorandClient,
+    stepFunctionsClient: new AwsStepFunctionsClient(stepFunctionsClient),
+  };
 };
 
 export default buildDependencies;

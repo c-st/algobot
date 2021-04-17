@@ -1,4 +1,3 @@
-import { getAddressSettings } from "../../clients/dynamodb/algoAddressStore";
 import * as dependencies from "../../dependencies";
 import { handler } from "./handleApiRequests";
 
@@ -14,9 +13,9 @@ const mockAddressStore = {
 describe("handleApiRequests", () => {
   beforeEach(() => {
     (dependencies as any).default = jest.fn().mockResolvedValue({
+      addressStore: mockAddressStore,
       algorandClient: mockAlgorandClient,
     });
-    (getAddressSettings as any) = mockAddressStore.getAddressSettings;
   });
 
   it("returns settings and current reward balance", async () => {

@@ -1,18 +1,17 @@
 import * as Lambda from "aws-lambda";
 import {
-  getAddressSettings,
-  upsertAddressSettings,
+  AlgoAddressStore,
 } from "../../clients/dynamodb/algoAddressStore";
+
 import buildDependencies from "../../dependencies";
 import {
-  RewardCollectionSettings,
   UpdateRewardCollectionSettingsCommand,
 } from "./types";
 
 export const handler = async (
   event: Lambda.APIGatewayProxyEvent
 ): Promise<Lambda.APIGatewayProxyResult> => {
-  const { algorandClient } = await buildDependencies();
+  const { addressStore, algorandClient } = await buildDependencies();
 
   switch (event.httpMethod) {
     case "GET": {
@@ -23,7 +22,7 @@ export const handler = async (
         });
       }
       const [addressSettings, accountState] = await Promise.all([
-        getAddressSettings(address),
+        addressStore.getAddressSettings(address),
         algorandClient.getAccountState(address), // todo: handle error (invalid address)
       ]);
       if (!accountState) {
@@ -57,7 +56,7 @@ export const handler = async (
         });
       }
       const [_, accountState] = await Promise.all([
-        await handleUpdateRewardCollectionSettingsCommand({
+        await handleUpdateRewardCollectionSettingsCommand(addressStore, {
           enable,
           address,
           minimumRewardsToCollect,
@@ -78,9 +77,10 @@ export const handler = async (
 };
 
 const handleUpdateRewardCollectionSettingsCommand = async (
+  addressStore: AlgoAddressStore,
   command: UpdateRewardCollectionSettingsCommand
 ) => {
-  await upsertAddressSettings({
+  await addressStore.upsertAddressSettings({
     rewardCollectionEnabled: command.enable,
     address: command.address,
     minimumRewardsToCollect: command.minimumRewardsToCollect,

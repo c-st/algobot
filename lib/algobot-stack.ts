@@ -31,6 +31,7 @@ interface AlgobotStackProps extends CDK.StackProps {
 
 export class AlgobotStack extends CDK.Stack {
   readonly secret: SecretsManager.ISecret;
+  readonly algoAddressesTable: DynamoDB.Table;
   readonly urlOutput: CDK.CfnOutput;
 
   constructor(scope: CDK.Construct, id: string, props: AlgobotStackProps) {
@@ -43,8 +44,6 @@ export class AlgobotStack extends CDK.Stack {
         secretCompleteArn: props.secretArn,
       }
     );
-
-    const stateMachine = buildCollectRewardsStateMachine(this);
 
     // Import certificate created in domain-stack
     const certificate = ACM.Certificate.fromCertificateArn(
@@ -86,7 +85,7 @@ export class AlgobotStack extends CDK.Stack {
     // Reward Collection
 
     // DynamoDb
-    const algoAddressesTable = new DynamoDB.Table(this, "AlgoAddresses", {
+    this.algoAddressesTable = new DynamoDB.Table(this, "AlgoAddresses", {
       tableName: `${props.stackName}-AlgoAddresses`,
       partitionKey: {
         name: "pk",
@@ -98,17 +97,20 @@ export class AlgobotStack extends CDK.Stack {
       stream: DynamoDB.StreamViewType.NEW_AND_OLD_IMAGES,
     });
 
+    const stateMachine = buildCollectRewardsStateMachine(this);
+
     const settingsChangedHandler = new LambdaNodeJs.NodejsFunction(
       this,
-      "DynamoDbStreamsHandler",
+      "SettingsChangedHandler",
       {
         entry: path.join(
           __dirname,
           "../src/usecases/reward-collection/handleSettingsChanged.ts"
         ),
         environment: {
-          ALGOADDRESSES_TABLENAME: algoAddressesTable.tableName,
-          REWARD_COLLECTION_STATEMACHINE_NAME: stateMachine.stateMachineName,
+          SECRET_ARN: this.secret.secretArn,
+          ALGOADDRESSES_TABLENAME: this.algoAddressesTable.tableName,
+          REWARD_COLLECTION_STATEMACHINE_ARN: stateMachine.stateMachineArn,
         },
         ...DEFAULT_LAMBDA_SETTINGS,
       }
@@ -117,7 +119,7 @@ export class AlgobotStack extends CDK.Stack {
     const deadLetterQueue = new SQS.Queue(this, "deadLetterQueue");
 
     settingsChangedHandler.addEventSource(
-      new LambdaEventSources.DynamoEventSource(algoAddressesTable, {
+      new LambdaEventSources.DynamoEventSource(this.algoAddressesTable, {
         startingPosition: Lambda.StartingPosition.LATEST,
         batchSize: 5,
         bisectBatchOnError: true,
@@ -126,7 +128,8 @@ export class AlgobotStack extends CDK.Stack {
       })
     );
 
-    algoAddressesTable.grantReadWriteData(settingsChangedHandler);
+    this.secret.grantRead(settingsChangedHandler);
+    this.algoAddressesTable.grantReadWriteData(settingsChangedHandler);
     stateMachine.grantStartExecution(settingsChangedHandler);
     stateMachine.grantRead(settingsChangedHandler);
 
@@ -139,13 +142,13 @@ export class AlgobotStack extends CDK.Stack {
           "../src/usecases/reward-collection/handleApiRequests.ts"
         ),
         environment: {
-          ALGOADDRESSES_TABLENAME: algoAddressesTable.tableName,
+          ALGOADDRESSES_TABLENAME: this.algoAddressesTable.tableName,
           SECRET_ARN: this.secret.secretArn,
         },
         ...DEFAULT_LAMBDA_SETTINGS,
       }
     );
-    algoAddressesTable.grantReadWriteData(apiRequestHandler);
+    this.algoAddressesTable.grantReadWriteData(apiRequestHandler);
     this.secret.grantRead(apiRequestHandler);
 
     const rewardCollectionEndpoint = api.root.addResource("reward-collection");

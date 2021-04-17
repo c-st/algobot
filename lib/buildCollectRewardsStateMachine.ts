@@ -4,15 +4,21 @@ import * as SFTasks from "@aws-cdk/aws-stepfunctions-tasks";
 import * as LambdaNodeJs from "@aws-cdk/aws-lambda-nodejs";
 import { AlgobotStack, DEFAULT_LAMBDA_SETTINGS } from "./algobot-stack";
 
-export const buildCollectRewardsStateMachine = (stack: AlgobotStack): SF.StateMachine => {
+export const buildCollectRewardsStateMachine = (
+  stack: AlgobotStack
+): SF.StateMachine => {
   // Fetch account information (retrieve account information, estimate wait time)
   const determineTimeToWaitHandler = new LambdaNodeJs.NodejsFunction(
     stack,
     "DetermineTimeToWait",
     {
-      entry: path.join(__dirname, "../src/usecases/reward-collection/determineTimeToWait.ts"),
+      entry: path.join(
+        __dirname,
+        "../src/usecases/reward-collection/determineTimeToWait.ts"
+      ),
       environment: {
         SECRET_ARN: stack.secret.secretArn,
+        ALGOADDRESSES_TABLENAME: stack.algoAddressesTable.tableName,
       },
       ...DEFAULT_LAMBDA_SETTINGS,
     }
@@ -23,9 +29,13 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack): SF.StateMa
     stack,
     "CollectReward",
     {
-      entry: path.join(__dirname, "../src/usecases/reward-collection/collectReward.ts"),
+      entry: path.join(
+        __dirname,
+        "../src/usecases/reward-collection/collectReward.ts"
+      ),
       environment: {
         SECRET_ARN: stack.secret.secretArn,
+        ALGOADDRESSES_TABLENAME: stack.algoAddressesTable.tableName,
       },
       ...DEFAULT_LAMBDA_SETTINGS,
     }
@@ -76,12 +86,16 @@ export const buildCollectRewardsStateMachine = (stack: AlgobotStack): SF.StateMa
         .otherwise(insufficientBalanceFail)
     );
 
-  const stateMachine = new SF.StateMachine(stack, "CollectRewardsStateMachine", {
-    stateMachineName: `${stack.stackName}-CollectRewards`,
-    stateMachineType: SF.StateMachineType.STANDARD,
-    tracingEnabled: true,
-    definition,
-  });
+  const stateMachine = new SF.StateMachine(
+    stack,
+    "CollectRewardsStateMachine",
+    {
+      stateMachineName: `${stack.stackName}-CollectRewards`,
+      stateMachineType: SF.StateMachineType.STANDARD,
+      tracingEnabled: true,
+      definition,
+    }
+  );
 
   return stateMachine;
 };

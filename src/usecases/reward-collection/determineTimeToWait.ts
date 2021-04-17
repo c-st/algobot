@@ -33,10 +33,21 @@ export const handler = async (
   const additionalAlgoNeeded =
     minimumRewardToCollect - accountState.pendingRewards;
 
+  console.log("", {
+    accountState,
+    minimumRewardToCollect,
+    additionalAlgoNeeded,
+  });
+
   const minutesUntilRewardCollection = estimateMinutesUntilRewardCollection(
     accountState.amountWithoutPendingRewards,
     additionalAlgoNeeded
   );
+
+  console.log("determineTime", {
+    minutesUntilRewardCollection,
+    MINIMUM_WAIT_TIME_MINUTES,
+  });
 
   return {
     nextRewardCollection: getIsoDateInFuture(
