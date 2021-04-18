@@ -3,25 +3,24 @@ import { estimateMinutesUntilRewardCollection } from "./estimateMinutesUntilRewa
 import { DetermineTimeToWaitResult, RewardCollectionParameters } from "./types";
 import dayjs from "dayjs";
 
-const MINIMUM_WAIT_TIME_MINUTES = 5;
+const MINIMUM_WAIT_TIME_MINUTES = 15;
 
 export const handler = async (
   event: RewardCollectionParameters
 ): Promise<DetermineTimeToWaitResult> => {
   const { address, minimumRewardsToCollect } = event;
-  console.log(
-    `Estimating reward collection time for ${address} (at least ${minimumRewardsToCollect} ALGO)`,
-    event
-  );
   if (!address || !minimumRewardsToCollect) {
     throw Error("Missing parameters in event");
   }
-
   const { algorandClient } = await buildDependencies();
   const accountState = await algorandClient.getAccountState(address);
   if (!accountState) {
     throw Error(`Account state for address ${address} could not be fetched`);
   }
+  console.log(
+    `Estimating reward collection time for ${address} (at least ${minimumRewardsToCollect} ALGO)`,
+    accountState
+  );
 
   // Already ready to claim?
   if (accountState.pendingRewards >= minimumRewardsToCollect) {
@@ -40,6 +39,11 @@ export const handler = async (
     accountState.amountWithoutPendingRewards,
     additionalAlgoNeeded
   );
+
+  console.log(`Estimated wait time ${minutesUntilRewardCollection}`, {
+    accountState,
+    additionalAlgoNeeded,
+  });
 
   return {
     nextRewardCollection: getIsoDateInFuture(

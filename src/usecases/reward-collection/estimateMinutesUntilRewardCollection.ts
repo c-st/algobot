@@ -9,6 +9,7 @@ export function estimateMinutesUntilRewardCollection(
 ) {
   const REWARDS_PER_SECOND = REWARDS_PER_BLOCK / BLOCK_TIME;
   const REWARDS_PER_SECOND_PER_ALGO = REWARDS_PER_SECOND / PARTICIPATING_ALGOS;
-  const timeInSeconds = targetRewards / (balance * REWARDS_PER_SECOND_PER_ALGO);
+  const timeInSeconds =
+    Math.min(0.1, targetRewards) / (balance * REWARDS_PER_SECOND_PER_ALGO);
   return Math.ceil(timeInSeconds / 60);
 }
