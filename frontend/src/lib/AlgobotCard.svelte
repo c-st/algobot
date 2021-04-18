@@ -109,11 +109,10 @@
       <Row>
         <span slot="title" class="pt-2">What does it do?</span>
         <span slot="content"
-          >Algobot regularly sends <span class="font-mono">0.00</span> ALGO to
-          the address specified above. This incoming transfer makes your account
-          claim your pending rewards and adds them to your balance.<br />Fees
-          for these transactions are covered by depositing funds in advance.</span
-        >
+          >Algobot regularly sends <span class="font-mono">0.00</span> ALGO to the
+          address specified above. This incoming transfer makes the account claim
+          the pending rewards and includes them in the balance.
+        </span>
       </Row>
     </dl>
   </div>
