@@ -63,7 +63,7 @@ export const buildCollectRewardsStateMachine = (
   const collectReward = new SFTasks.LambdaInvoke(stack, "Collect rewards", {
     lambdaFunction: collectRewardHandler,
     outputPath: "$.Payload",
-    retryOnServiceExceptions: false,
+    retryOnServiceExceptions: true,
   });
 
   const insufficientBalanceFail = new SF.Fail(

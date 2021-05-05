@@ -36,6 +36,6 @@ In order to start collecting rewards a user first has to transfer Algo to Algobo
 # Testnet
 {
   "address": "E6FYJDBQE2ER4M3YAOIT2LLPBJTKBADSPU34Q5RFONQIFIK7UHKD3U3TGY",
-  "minimumRewardToCollect": 0
+  "minimumRewardsToCollect": 0
 }
 ```
