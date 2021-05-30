@@ -17,15 +17,15 @@
 ### Feature list
 
 - [x] Regularly collect rewards (based on Step function + Lambda)
-- [ ] API for configuring settings
-- [ ] Frontend for configuring settings
+- [x] Determine interval for collection based on amount to claim
+- [x] API for configuring settings
+- [x] Frontend for configuring settings
 - [ ] Fund account with transaction fees
 
 ### Future optimizations
 
-- 2FA/password once address has been registered
-- Determine optimal interval for sending 0.00 ALGO (rewards should be significantly larger than transaction fees)
-- Notify users if deposited fee is about to run out
+- verify address ownership
+- notify users if deposited fee is about to run out
 
 ## Getting started
 
@@ -39,10 +39,12 @@
 
 ### Frontend
 
-tbd: Amplify Web-App (Vue/Preact/? + Vite + Typescript)
+See `./frontend/`.
 
 ## Development notes
 
 [Step Functions local](https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local-docker.html)
+
 [VSCode support](https://aws.amazon.com/blogs/compute/aws-step-functions-support-in-visual-studio-code/)
+
 [Integration with EventBridge](https://docs.aws.amazon.com/step-functions/latest/dg/cw-events.html)
